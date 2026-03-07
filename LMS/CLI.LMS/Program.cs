@@ -1,10 +1,33 @@
-﻿namespace CLI.LMS
+﻿using CLI.LMS.UserSections;
+
+namespace CLI.LMS
 {
     internal class Program
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("Hello, World!");
+
+            var userChoice = "1";
+            do
+            {
+                Console.WriteLine("Welcome to Mock Canvas!"); 
+                Console.WriteLine("Please select a user type: ");
+                Console.WriteLine("1. Student");
+                Console.WriteLine("2. Teacher");
+                Console.WriteLine("3. Quit Application");
+
+                userChoice = Console.ReadLine();
+
+                if (userChoice.Equals("1"))
+                {
+                    new StudentMenuSection().EnterMainMenu();
+
+                }
+                else if (userChoice.Equals("2"))
+                {
+                    new TeacherMenuSection().EnterMainMenu();
+                }
+            } while (userChoice != "3");
         }
     }
 }
