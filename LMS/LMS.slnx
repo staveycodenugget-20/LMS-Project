@@ -1,3 +1,4 @@
 <Solution>
   <Project Path="CLI.LMS/CLI.LMS.csproj" />
+  <Project Path="UserInformation/UserInformation.csproj" Id="88a23146-7138-4666-933a-950a31dd533f" />
 </Solution>
