@@ -14,7 +14,7 @@ namespace CLI.LMS.UserSections
             Console.WriteLine("--------------------------");
             Console.WriteLine("Teacher Main Menu:");
             Console.WriteLine("1. Enroll a student");
-            Console.WriteLine("2. Add a course");
+            Console.WriteLine("2. Add/Select a Course Menu");
             Console.WriteLine("--------------------------\n");
 
             var choice = Console.ReadLine();
@@ -27,8 +27,7 @@ namespace CLI.LMS.UserSections
             }
             else if ("2".Equals(choice))
             {
-                var newCourse = CreateCourseRecord();
-                CourseServiceProxy.Current.Add(newCourse);
+                SubMenu();
             }
         }
 
@@ -85,6 +84,94 @@ namespace CLI.LMS.UserSections
             newCourse.Description = Console.ReadLine()?.Trim() ?? "";
 
             return newCourse;
+        }
+
+        public void SubMenu()
+        {
+            Console.WriteLine("--------------------------");
+            Console.WriteLine("Course Manager (Sub-Menu):");
+            Console.WriteLine("1. Add a course");
+            Console.WriteLine("2. Select existing course Menu");
+            Console.WriteLine("--------------------------\n");
+
+            var choice = Console.ReadLine();
+
+            if ("1".Equals(choice))
+            {
+                var newCourse = CreateCourseRecord();
+                CourseServiceProxy.Current.Add(newCourse);
+            }
+            else if ("2".Equals(choice))
+            {
+                CourseSelectionProcess();
+            }
+            
+        }
+
+        //Issue 17 start: Create teacher sub-menu
+        public void CourseSelectionProcess()
+        {
+            var courses = CourseServiceProxy.Current.Courses;
+
+            if (courses == null || !courses.Any())
+            {
+                Console.WriteLine("--------------------------");
+                Console.WriteLine("No courses available. Please add a course first.");
+                Console.WriteLine("--------------------------");
+                SubMenu();
+                return;
+            }
+
+            Console.WriteLine("\nAvailable Courses:");
+            foreach (var c in courses)
+            {
+                Console.WriteLine($"{c.Id} - {c.Name}");
+            }
+
+            Console.Write("\nEnter course Id (The number before the course name/code): ");
+            var input = Console.ReadLine()?.Trim() ?? "";
+
+            if (!int.TryParse(input, out int selectedId))
+            {
+                Console.WriteLine("Invalid Id.");
+                return;
+            }
+
+            var selectedCourse = courses.FirstOrDefault(c => c.Id == selectedId);
+
+            if (selectedCourse == null)
+            {
+                Console.WriteLine("Course not found.");
+                return;
+            }
+
+            ShowCourseInfo(selectedCourse);
+        }
+
+        public void ShowCourseInfo(Course course)
+        {
+            bool running = true;
+
+            while (running)
+            {
+                Console.WriteLine($"\nCourse: {course.Name}");
+                Console.WriteLine("1. Back");
+
+
+                var choice = Console.ReadLine()?.Trim() ?? "";
+
+                switch (choice)
+                {
+                    case "1":
+                        running = false;
+                        SubMenu();
+                        break;
+
+                    default:
+                        Console.WriteLine("Invalid option.");
+                        break;
+                }
+            }
         }
     }
 }
