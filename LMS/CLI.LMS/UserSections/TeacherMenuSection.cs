@@ -125,7 +125,7 @@ namespace CLI.LMS.UserSections
             Console.WriteLine("\nAvailable Courses:");
             foreach (var c in courses)
             {
-                Console.WriteLine($"{c.Id} - {c.Name}");
+                Console.WriteLine($"{c.Id} - {c.Name}: {c.Code}");
             }
 
             Console.Write("\nEnter course Id (The number before the course name/code): ");
@@ -147,22 +147,42 @@ namespace CLI.LMS.UserSections
 
             ShowCourseInfo(selectedCourse);
         }
-
+        //May need actual instances to see if this works better
         public void ShowCourseInfo(Course course)
         {
             bool running = true;
 
             while (running)
             {
-                Console.WriteLine($"\nCourse: {course.Name}");
-                Console.WriteLine("1. Back");
+                Console.WriteLine($"\nCourse: {course.Name} - {course.Code}");
+                Console.WriteLine("1. View Modules");
+                Console.WriteLine("2. View Assignments");
+                Console.WriteLine("3. View Roster");
+                Console.WriteLine("4. View Course Schedule");
+                Console.WriteLine("5. Back");
 
 
                 var choice = Console.ReadLine()?.Trim() ?? "";
 
                 switch (choice)
-                {
+                {//Issue #19 start: Main Course menu
                     case "1":
+                        ShowModules(course);
+                        break;
+
+                    case "2":
+                        ShowAssignments(course);
+                        break;
+
+                    case "3":
+                        ShowRoster(course);
+                        break;
+
+                    case "4":
+                        ShowSchedule(course);
+                        break;
+
+                    case "5":
                         running = false;
                         SubMenu();
                         break;
@@ -171,6 +191,65 @@ namespace CLI.LMS.UserSections
                         Console.WriteLine("Invalid option.");
                         break;
                 }
+            }
+        }
+
+        public void ShowModules(Course course)
+        {
+            if (!course.Modules.Any())
+            {
+                Console.WriteLine("No modules available.");
+                return;
+            }
+
+            Console.WriteLine("\nModules:");
+            foreach (var module in course.Modules)
+            {
+                Console.WriteLine(module.Name);
+            }
+        }
+
+        public void ShowAssignments(Course course)
+        {
+            if (!course.Assignments.Any())
+            {
+                Console.WriteLine("No assignments available.");
+                return;
+            }
+
+            Console.WriteLine("\nAssignments:");
+            foreach (var assignments in course.Assignments)
+            {
+                Console.WriteLine(assignments.Name);
+            }
+        }
+        public void ShowRoster(Course course)
+        {
+            if (!course.Roster.Any())
+            {
+                Console.WriteLine("No roster available.");
+                return;
+            }
+
+            Console.WriteLine("\nStudents:");
+            foreach (var student in course.Roster)
+            {
+                Console.WriteLine($"{student.Id} - {student.Name}");
+            }
+        }
+
+        public void ShowSchedule(Course course)
+        {
+            if (!course.Assignments.Any())
+            {
+                Console.WriteLine("No assignments scheduled.");
+                return;
+            }
+
+            Console.WriteLine("\nCourse Schedule:");
+            foreach (var assignment in course.Assignments)
+            {
+                Console.WriteLine($"{assignment.Name} - Due: {assignment.DueDate}");
             }
         }
     }
