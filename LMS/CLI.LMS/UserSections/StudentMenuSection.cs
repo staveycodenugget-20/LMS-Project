@@ -27,7 +27,7 @@ namespace CLI.LMS.UserSections
         }
 
         //Issue 17 start: Create teacher sub-menu
-        public void CourseMainMenu(Student student)
+        public void CourseSelectorMenu(Student student)
         {
             var allCourses = CourseServiceProxy.Current.Courses;
             var enrolledCourses = allCourses.Where(c => c.Roster.Any(s => s.Id == student.Id)).ToList();
@@ -239,7 +239,7 @@ namespace CLI.LMS.UserSections
                 return;
             }
 
-            CourseMainMenu(selectedStudent);
+            CourseSelectorMenu(selectedStudent);
         }
     }
 }

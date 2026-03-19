@@ -98,13 +98,13 @@ namespace CLI.LMS.UserSections
             }
             else if ("2".Equals(choice))
             {
-                CourseSelectionProcess();
+                CourseSelectorMenu();
             }
             
         }
 
         //Issue 17 start: Create teacher sub-menu
-        public void CourseSelectionProcess()
+        public void CourseSelectorMenu()
         {
             var courses = CourseServiceProxy.Current.Courses;
 
@@ -153,10 +153,11 @@ namespace CLI.LMS.UserSections
                 Console.WriteLine("1. Enroll a student");
                 Console.WriteLine("2. Unenroll a student");
                 Console.WriteLine("3. View Modules");
-                Console.WriteLine("4. View Assignments");
-                Console.WriteLine("5. View Roster");
-                Console.WriteLine("6. View Course Schedule");
-                Console.WriteLine("7. Back");
+                Console.WriteLine("4. Add assignment");
+                Console.WriteLine("5. View assignments");
+                Console.WriteLine("6. View roster");
+                Console.WriteLine("7. View course schedule");
+                Console.WriteLine("8. Back");
 
 
                 var choice = Console.ReadLine()?.Trim() ?? "";
@@ -176,18 +177,22 @@ namespace CLI.LMS.UserSections
                         break;
 
                     case "4":
-                        ShowAssignments(course);
+                        AddAssignment(course);
                         break;
 
                     case "5":
-                        ShowRoster(course);
+                        ShowAssignments(course);
                         break;
 
                     case "6":
-                        ShowSchedule(course);
+                        ShowRoster(course);
                         break;
 
                     case "7":
+                        ShowSchedule(course);
+                        break;
+
+                    case "8":
                         running = false;
                         break;
 
@@ -377,6 +382,42 @@ namespace CLI.LMS.UserSections
             course.Roster.Remove(studentToRemove);
 
             Console.WriteLine($"Student {studentToRemove.Name} unenrolled.");
+        }
+
+        public void AddAssignment(Course course)
+        {
+            var newAssignment = new Assignment();
+
+            Console.Write("Assignment Name: ");
+            newAssignment.Name = Console.ReadLine()?.Trim() ?? "";
+
+            Console.Write("Description: ");
+            newAssignment.Description = Console.ReadLine()?.Trim() ?? "";
+
+            Console.Write("Due Date (MM/DD/YYYY): ");
+            var input = Console.ReadLine()?.Trim() ?? "";
+
+            if (!DateTime.TryParse(input, out DateTime dueDate))
+            {
+                Console.WriteLine("Invalid date format.");
+                return;
+            }
+
+            newAssignment.DueDate = dueDate;
+
+            //Assign Id to assignment
+            if (!course.Assignments.Any())
+            {
+                newAssignment.Id = "1";
+            }
+            else
+            {
+                newAssignment.Id = course.Assignments.Max(a => a.Id) + 1;
+            }
+
+            course.Assignments.Add(newAssignment);
+
+            Console.WriteLine($"Assignment '{newAssignment.Name}' added!");
         }
     }
 }
