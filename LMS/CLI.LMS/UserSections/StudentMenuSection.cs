@@ -201,7 +201,8 @@ namespace CLI.LMS.UserSections
 
             Console.WriteLine("You have been unenrolled from the course.");
         }
-        //Issue #66 start 
+        //Issue #66 start (Student login).
+        //Also closes #2 (Allow student to interact with enrolled courses).
         private void SelectStudent()
         {
             var students = StudentServiceProxy.Current.Students;
