@@ -1,4 +1,5 @@
 ﻿//Student Menu Interface Implementation
+using CLI.LMS.Services;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -11,35 +12,37 @@ namespace CLI.LMS.UserSections
     {
         public void EnterMainMenu()
         {
-            Console.WriteLine("--------------------------");
+            Console.WriteLine("\n--------------------------");
             Console.WriteLine("Student Main Menu:");
-            Console.WriteLine("1. View Course Menu");
+            Console.WriteLine("1. Select a student");
             Console.WriteLine("--------------------------");
 
             var choice = Console.ReadLine();
             
             if ("1".Equals(choice))
             {
-                CourseMainMenu();
+                SelectStudent();
             }
 
         }
 
         //Issue 17 start: Create teacher sub-menu
-        public void CourseMainMenu()
+        public void CourseMainMenu(Student student)
         {
-            var courses = CourseServiceProxy.Current.Courses;
+            var allCourses = CourseServiceProxy.Current.Courses;
+            var enrolledCourses = allCourses.Where(c => c.Roster.Any(s => s.Id == student.Id)).ToList();
 
-            if (courses == null || !courses.Any())
+            if (enrolledCourses == null || !enrolledCourses.Any())
             {
-                Console.WriteLine("--------------------------");
+                Console.WriteLine("/n--------------------------");
                 Console.WriteLine("No courses available. Please wait for instructor to add a course first.");
                 Console.WriteLine("--------------------------");
                 return;
             }
 
-            Console.WriteLine("\nAvailable Courses:");
-            foreach (var c in courses)
+            Console.WriteLine($"\nCourses for {student.Name}:");
+
+            foreach (var c in enrolledCourses)
             {
                 Console.WriteLine($"{c.Id} - {c.Name}: {c.Code}");
             }
@@ -53,7 +56,7 @@ namespace CLI.LMS.UserSections
                 return;
             }
 
-            var selectedCourse = courses.FirstOrDefault(c => c.Id == selectedId);
+            var selectedCourse = enrolledCourses.FirstOrDefault(c => c.Id == selectedId);
 
             if (selectedCourse == null)
             {
@@ -176,7 +179,7 @@ namespace CLI.LMS.UserSections
         }
         public void UnenrollSelf(Course course)
         {
-            Console.Write("Enter your student Id to unenroll: ");
+            Console.Write("Enter your student Id to unenroll OR type a letter to go back: ");
             var input = Console.ReadLine()?.Trim() ?? "";
 
             if (!int.TryParse(input, out int studentId))
@@ -197,6 +200,45 @@ namespace CLI.LMS.UserSections
             course.Roster.Remove(student);
 
             Console.WriteLine("You have been unenrolled from the course.");
+        }
+        //Issue #66 start 
+        private void SelectStudent()
+        {
+            var students = StudentServiceProxy.Current.Students;
+
+            if (students == null || !students.Any())
+            {
+                //Future: Make it so students can enroll themselves?
+                Console.WriteLine("\n--------------------------");
+                Console.WriteLine("No students found. Please wait for instructor to enroll a student first.");
+                Console.WriteLine("--------------------------");
+                return;
+            }
+
+            Console.WriteLine("\nStudents:");
+            foreach (var s in students)
+            {
+                Console.WriteLine($"{s.Id} - {s.Name}");
+            }
+
+            Console.Write("\nEnter student Id: ");
+            var input = Console.ReadLine()?.Trim() ?? "";
+
+            if (!int.TryParse(input, out int studentId))
+            {
+                Console.WriteLine("Invalid input.");
+                return;
+            }
+
+            var selectedStudent = students.FirstOrDefault(s => s.Id == studentId);
+
+            if (selectedStudent == null)
+            {
+                Console.WriteLine("Student not found.");
+                return;
+            }
+
+            CourseMainMenu(selectedStudent);
         }
     }
 }
