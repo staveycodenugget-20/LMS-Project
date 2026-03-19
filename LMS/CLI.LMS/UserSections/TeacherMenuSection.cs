@@ -189,7 +189,6 @@ namespace CLI.LMS.UserSections
 
                     case "7":
                         running = false;
-                        SubMenu();
                         break;
 
                     default:
@@ -337,8 +336,9 @@ namespace CLI.LMS.UserSections
                 }
 
                 course.Roster.Add(selectedStudent);
-
+                Console.WriteLine("\n--------------------------");
                 Console.WriteLine($"Student {selectedStudent.Name} enrolled!");
+                Console.WriteLine("--------------------------");
             }
         }
         //Issue #4 start: Unenrolling students
@@ -356,7 +356,7 @@ namespace CLI.LMS.UserSections
                 Console.WriteLine($"{s.Id} - {s.Name}");
             }
 
-            Console.Write("\nEnter student Id to unenroll: ");
+            Console.Write("\nEnter student Id to unenroll (Based on course roster): ");
             var input = Console.ReadLine()?.Trim() ?? "";
 
             if (!int.TryParse(input, out int studentId))
