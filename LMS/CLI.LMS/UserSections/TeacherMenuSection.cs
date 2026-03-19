@@ -113,7 +113,7 @@ namespace CLI.LMS.UserSections
                 Console.WriteLine("--------------------------");
                 Console.WriteLine("No courses available. Please add a course first.");
                 Console.WriteLine("--------------------------");
-                SubMenu();
+                //SubMenu();
                 return;
             }
 
@@ -151,11 +151,12 @@ namespace CLI.LMS.UserSections
             {
                 Console.WriteLine($"\nCourse: {course.Name} - {course.Code}");
                 Console.WriteLine("1. Enroll a student");
-                Console.WriteLine("2. View Modules");
-                Console.WriteLine("3. View Assignments");
-                Console.WriteLine("4. View Roster");
-                Console.WriteLine("5. View Course Schedule");
-                Console.WriteLine("6. Back");
+                Console.WriteLine("2. Unenroll a student");
+                Console.WriteLine("3. View Modules");
+                Console.WriteLine("4. View Assignments");
+                Console.WriteLine("5. View Roster");
+                Console.WriteLine("6. View Course Schedule");
+                Console.WriteLine("7. Back");
 
 
                 var choice = Console.ReadLine()?.Trim() ?? "";
@@ -167,22 +168,26 @@ namespace CLI.LMS.UserSections
                         break;
 
                     case "2":
-                        ShowModules(course);
+                        UnenrollStudent(course);
                         break;
 
                     case "3":
-                        ShowAssignments(course);
+                        ShowModules(course);
                         break;
 
                     case "4":
-                        ShowRoster(course);
+                        ShowAssignments(course);
                         break;
 
                     case "5":
-                        ShowSchedule(course);
+                        ShowRoster(course);
                         break;
 
                     case "6":
+                        ShowSchedule(course);
+                        break;
+
+                    case "7":
                         running = false;
                         SubMenu();
                         break;
@@ -223,6 +228,7 @@ namespace CLI.LMS.UserSections
                 Console.WriteLine(assignments.Name);
             }
         }
+
         public void ShowRoster(Course course)
         {
             if (!course.Roster.Any())
@@ -334,9 +340,43 @@ namespace CLI.LMS.UserSections
 
                 Console.WriteLine($"Student {selectedStudent.Name} enrolled!");
             }
+        }
+        //Issue #4 start: Unenrolling students
+        public void UnenrollStudent(Course course)
+        {
+            if (!course.Roster.Any())
+            {
+                Console.WriteLine("No students enrolled in this course.");
+                return;
+            }
 
-           
+            Console.WriteLine("\nEnrolled Students:");
+            foreach (var s in course.Roster)
+            {
+                Console.WriteLine($"{s.Id} - {s.Name}");
+            }
 
+            Console.Write("\nEnter student Id to unenroll: ");
+            var input = Console.ReadLine()?.Trim() ?? "";
+
+            if (!int.TryParse(input, out int studentId))
+            {
+                Console.WriteLine("Invalid input.");
+                return;
+            }
+
+            var studentToRemove = course.Roster
+                .FirstOrDefault(s => s.Id == studentId);
+
+            if (studentToRemove == null)
+            {
+                Console.WriteLine("Student not found in this course.");
+                return;
+            }
+
+            course.Roster.Remove(studentToRemove);
+
+            Console.WriteLine($"Student {studentToRemove.Name} unenrolled.");
         }
     }
 }
