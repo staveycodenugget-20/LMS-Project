@@ -25,22 +25,6 @@ namespace CLI.LMS.UserSections
 
         }
 
-      /*  public void SubMenu()
-        {
-            Console.WriteLine("--------------------------");
-            Console.WriteLine("Course Manager:");
-            Console.WriteLine("1.  course Menu");
-            Console.WriteLine("--------------------------\n");
-
-            var choice = Console.ReadLine();
-
-            if ("1".Equals(choice))
-            {
-                CourseMainMenu();
-            }
-
-        }*/
-
         //Issue 17 start: Create teacher sub-menu
         public void CourseMainMenu()
         {
@@ -86,11 +70,12 @@ namespace CLI.LMS.UserSections
             while (running)
             {
                 Console.WriteLine($"\nCourse: {course.Name} - {course.Code}");
-                Console.WriteLine("1. View Modules");
-                Console.WriteLine("2. View Assignments");
-                Console.WriteLine("3. View Roster");
-                Console.WriteLine("4. View Course Schedule");
-                Console.WriteLine("5. Back");
+                Console.WriteLine("1. Unenroll from this course");
+                Console.WriteLine("2. View Modules");
+                Console.WriteLine("3. View Assignments");
+                Console.WriteLine("4. View Roster");
+                Console.WriteLine("5. View Course Schedule");
+                Console.WriteLine("6. Back");
 
 
                 var choice = Console.ReadLine()?.Trim() ?? "";
@@ -98,24 +83,28 @@ namespace CLI.LMS.UserSections
                 switch (choice)
                 {//Issue #19 start: Main Course menu 
                  //May need actual instances to see if this works better
-
                     case "1":
-                        ShowModules(course);
+                        UnenrollSelf(course);
+                        running = false;
                         break;
 
                     case "2":
-                        ShowAssignments(course);
+                        ShowModules(course);
                         break;
 
                     case "3":
-                        ShowRoster(course);
+                        ShowAssignments(course);
                         break;
 
                     case "4":
-                        ShowSchedule(course);
+                        ShowRoster(course);
                         break;
 
                     case "5":
+                        ShowSchedule(course);
+                        break;
+
+                    case "6":
                         running = false;
                         break;
 
@@ -155,6 +144,7 @@ namespace CLI.LMS.UserSections
                 Console.WriteLine(assignments.Name);
             }
         }
+
         public void ShowRoster(Course course)
         {
             if (!course.Roster.Any())
@@ -183,6 +173,30 @@ namespace CLI.LMS.UserSections
             {
                 Console.WriteLine($"{assignment.Name} - Due: {assignment.DueDate}");
             }
+        }
+        public void UnenrollSelf(Course course)
+        {
+            Console.Write("Enter your student Id to unenroll: ");
+            var input = Console.ReadLine()?.Trim() ?? "";
+
+            if (!int.TryParse(input, out int studentId))
+            {
+                Console.WriteLine("Invalid input.");
+                return;
+            }
+
+            var student = course.Roster
+                .FirstOrDefault(s => s.Id == studentId);
+
+            if (student == null)
+            {
+                Console.WriteLine("You are not enrolled in this course.");
+                return;
+            }
+
+            course.Roster.Remove(student);
+
+            Console.WriteLine("You have been unenrolled from the course.");
         }
     }
 }
