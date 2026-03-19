@@ -154,10 +154,11 @@ namespace CLI.LMS.UserSections
                 Console.WriteLine("2. Unenroll a student");
                 Console.WriteLine("3. View Modules");
                 Console.WriteLine("4. Add assignment");
-                Console.WriteLine("5. View assignments");
-                Console.WriteLine("6. View roster");
-                Console.WriteLine("7. View course schedule");
-                Console.WriteLine("8. Back");
+                Console.WriteLine("5. Edit assignment");
+                Console.WriteLine("6. View assignments");
+                Console.WriteLine("7. View roster");
+                Console.WriteLine("8. View course schedule");
+                Console.WriteLine("9. Back");
 
 
                 var choice = Console.ReadLine()?.Trim() ?? "";
@@ -181,18 +182,22 @@ namespace CLI.LMS.UserSections
                         break;
 
                     case "5":
-                        ShowAssignments(course);
+                        EditAssignment(course);
                         break;
 
                     case "6":
-                        ShowRoster(course);
+                        ShowAssignments(course);
                         break;
 
                     case "7":
-                        ShowSchedule(course);
+                        ShowRoster(course);
                         break;
 
                     case "8":
+                        ShowSchedule(course);
+                        break;
+
+                    case "9":
                         running = false;
                         break;
 
@@ -419,5 +424,70 @@ namespace CLI.LMS.UserSections
 
             Console.WriteLine($"Assignment '{newAssignment.Name}' added!");
         }
+
+        public void EditAssignment(Course course)
+        {
+            if (!course.Assignments.Any())
+            {
+                Console.WriteLine("No assignments available to edit.");
+                return;
+            }
+
+            Console.WriteLine("\nAssignments:");
+            foreach (var a in course.Assignments)
+            {
+                Console.WriteLine($"{a.Id} - {a.Name}");
+            }
+
+            Console.Write("\nEnter Assignment Id to edit: ");
+            var input = Console.ReadLine()?.Trim() ?? "";
+
+            if (!int.TryParse(input, out int assignmentId))
+            {
+                Console.WriteLine("Invalid input.");
+                return;
+            }
+
+            var assignment = course.Assignments.FirstOrDefault(a => int.Parse(a.Id) == assignmentId);
+
+            if (assignment == null)
+            {
+                Console.WriteLine("Assignment not found.");
+                return;
+            }
+
+            
+            Console.Write($"New Name (Current: {assignment.Name}): ");
+            var newName = Console.ReadLine()?.Trim();
+            if (!string.IsNullOrEmpty(newName))
+            {
+                assignment.Name = newName;
+            }
+
+            Console.Write($"New Description (current: {assignment.Description}): ");
+            var newDesc = Console.ReadLine()?.Trim();
+            if (!string.IsNullOrEmpty(newDesc))
+            {
+                assignment.Description = newDesc;
+            }
+
+            Console.Write($"New Due Date (current: {assignment.DueDate}) (MM/DD/YYYY): ");
+            var dateInput = Console.ReadLine()?.Trim();
+
+            if (!string.IsNullOrEmpty(dateInput))
+            {
+                if (DateTime.TryParse(dateInput, out DateTime newDate))
+                {
+                    assignment.DueDate = newDate;
+                }
+                else
+                {
+                    Console.WriteLine("Invalid date. Keeping old due date.");
+                }
+            }
+
+            Console.WriteLine("Assignment updated successfully!");
+        }
+
     }
 }
