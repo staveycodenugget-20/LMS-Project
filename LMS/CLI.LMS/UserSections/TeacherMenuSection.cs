@@ -13,19 +13,14 @@ namespace CLI.LMS.UserSections
         {
             Console.WriteLine("--------------------------");
             Console.WriteLine("Teacher Main Menu:");
-            Console.WriteLine("1. Enroll a student");
-            Console.WriteLine("2. Add/Select a Course Menu");
+            Console.WriteLine("1. Add/Select a Course Menu");
             Console.WriteLine("--------------------------\n");
 
             var choice = Console.ReadLine();
 
             //if (choice.Equals("1"))
+            
             if ("1".Equals(choice))
-            {
-                var newStudent = CreateStudentRecord();
-                StudentServiceProxy.Current.Add(newStudent);
-            }
-            else if ("2".Equals(choice))
             {
                 SubMenu();
             }
@@ -125,7 +120,7 @@ namespace CLI.LMS.UserSections
             Console.WriteLine("\nAvailable Courses:");
             foreach (var c in courses)
             {
-                Console.WriteLine($"{c.Id} - {c.Name}: {c.Code}");
+                Console.WriteLine($"{c.Id} - {c.Name} {c.Code}");
             }
 
             Console.Write("\nEnter course Id (The number before the course name/code): ");
@@ -155,11 +150,12 @@ namespace CLI.LMS.UserSections
             while (running)
             {
                 Console.WriteLine($"\nCourse: {course.Name} - {course.Code}");
-                Console.WriteLine("1. View Modules");
-                Console.WriteLine("2. View Assignments");
-                Console.WriteLine("3. View Roster");
-                Console.WriteLine("4. View Course Schedule");
-                Console.WriteLine("5. Back");
+                Console.WriteLine("1. Enroll a student");
+                Console.WriteLine("2. View Modules");
+                Console.WriteLine("3. View Assignments");
+                Console.WriteLine("4. View Roster");
+                Console.WriteLine("5. View Course Schedule");
+                Console.WriteLine("6. Back");
 
 
                 var choice = Console.ReadLine()?.Trim() ?? "";
@@ -167,22 +163,26 @@ namespace CLI.LMS.UserSections
                 switch (choice)
                 {//Issue #19 start: Main Course menu
                     case "1":
-                        ShowModules(course);
+                        EnrollStudent(course);
                         break;
 
                     case "2":
-                        ShowAssignments(course);
+                        ShowModules(course);
                         break;
 
                     case "3":
-                        ShowRoster(course);
+                        ShowAssignments(course);
                         break;
 
                     case "4":
-                        ShowSchedule(course);
+                        ShowRoster(course);
                         break;
 
                     case "5":
+                        ShowSchedule(course);
+                        break;
+
+                    case "6":
                         running = false;
                         SubMenu();
                         break;
@@ -227,11 +227,16 @@ namespace CLI.LMS.UserSections
         {
             if (!course.Roster.Any())
             {
-                Console.WriteLine("No roster available.");
+                Console.WriteLine("\n--------------------------");
+                Console.WriteLine("No roster available (Try enrolling a student). ");
+                Console.WriteLine("--------------------------");
                 return;
             }
 
-            Console.WriteLine("\nStudents:");
+            Console.WriteLine("\n--------------------------");
+            Console.WriteLine("\nStudents of this course:");
+            Console.WriteLine("--------------------------");
+
             foreach (var student in course.Roster)
             {
                 Console.WriteLine($"{student.Id} - {student.Name}");
@@ -251,6 +256,87 @@ namespace CLI.LMS.UserSections
             {
                 Console.WriteLine($"{assignment.Name} - Due: {assignment.DueDate}");
             }
+        }
+
+        public void EnrollStudent(Course course)
+        {
+            var students = StudentServiceProxy.Current.Students;
+
+            Console.WriteLine("\n--------------------------");
+            Console.WriteLine("1. Enroll new student");
+            Console.WriteLine("2. Enroll existing student");
+            Console.WriteLine("--------------------------");
+
+
+            var enrollChoice = Console.ReadLine();
+
+            //Ceate new student
+            if ("1".Equals(enrollChoice))
+            {
+                var newStudent = CreateStudentRecord();
+                StudentServiceProxy.Current.Add(newStudent);
+
+                //Shallow copy
+                course.Roster.Add(newStudent);
+                Console.WriteLine("\n--------------------------");
+                Console.WriteLine($"Student {newStudent.Name} enrolled!");
+                Console.WriteLine("--------------------------");
+                return;
+            }
+
+            //Show existing students
+            else if ("2".Equals(enrollChoice))
+            {
+                if (students == null || !students.Any())
+                {
+                    Console.WriteLine("\n--------------------------");
+                    Console.WriteLine("No existing students found. Please create a new student.");
+                    Console.WriteLine("--------------------------");
+                    return;
+                }
+                
+                Console.WriteLine("\nExisting Students:");
+                foreach (var s in students)
+                {
+                    Console.WriteLine($"{s.Id} - {s.Name}");
+                }
+                Console.WriteLine("\n--------------------------");
+                Console.WriteLine("\nEnter student Id to enroll or enter any key to exit:");
+                Console.WriteLine("--------------------------");
+                var input = Console.ReadLine()?.Trim() ?? "";
+
+                //Select existing student
+                if (!int.TryParse(input, out int studentId))
+                {
+                    Console.WriteLine("Invalid input.");
+                    return;
+                }
+
+                var selectedStudent = students.FirstOrDefault(s => s.Id == studentId);
+
+                if (selectedStudent == null)
+                {
+
+                    Console.WriteLine("Student not found.");
+                    return;
+                }
+
+                //Prevent duplicate enrollment
+                if (course.Roster.Any(s => s.Id == selectedStudent.Id))
+                {
+                    Console.WriteLine("\n--------------------------");
+                    Console.WriteLine("Student already enrolled in this course.");
+                    Console.WriteLine("--------------------------");
+                    return;
+                }
+
+                course.Roster.Add(selectedStudent);
+
+                Console.WriteLine($"Student {selectedStudent.Name} enrolled!");
+            }
+
+           
+
         }
     }
 }
