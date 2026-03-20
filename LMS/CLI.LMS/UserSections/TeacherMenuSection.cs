@@ -413,7 +413,7 @@ namespace CLI.LMS.UserSections
             //Assign Id to assignment
             if (!course.Assignments.Any())
             {
-                newAssignment.Id = "1";
+                newAssignment.Id = 1;
             }
             else
             {
@@ -448,7 +448,7 @@ namespace CLI.LMS.UserSections
                 return;
             }
 
-            var assignment = course.Assignments.FirstOrDefault(a => int.Parse(a.Id) == assignmentId);
+            var assignment = course.Assignments.FirstOrDefault(a => a.Id == assignmentId);
 
             if (assignment == null)
             {
