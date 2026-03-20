@@ -64,9 +64,9 @@ namespace CLI.LMS.UserSections
                 return;
             }
 
-            ShowCourseInfo(selectedCourse);
+            ShowCourseInfo(selectedCourse, student);
         }
-        public void ShowCourseInfo(Course course)
+        public void ShowCourseInfo(Course course, Student student)
         {
             bool running = true;
 
@@ -76,9 +76,10 @@ namespace CLI.LMS.UserSections
                 Console.WriteLine("1. Unenroll from this course");
                 Console.WriteLine("2. View Modules");
                 Console.WriteLine("3. View Assignments");
-                Console.WriteLine("4. View Roster");
-                Console.WriteLine("5. View Course Schedule");
-                Console.WriteLine("6. Back");
+                Console.WriteLine("4. Submit Assignment");
+                Console.WriteLine("5. View Roster");
+                Console.WriteLine("6. View Course Schedule");
+                Console.WriteLine("7. Back");
 
 
                 var choice = Console.ReadLine()?.Trim() ?? "";
@@ -100,14 +101,18 @@ namespace CLI.LMS.UserSections
                         break;
 
                     case "4":
-                        ShowRoster(course);
+                        SubmitAssignment(course, student);
                         break;
 
                     case "5":
-                        ShowSchedule(course);
+                        ShowRoster(course);
                         break;
 
                     case "6":
+                        ShowSchedule(course);
+                        break;
+
+                    case "7":
                         running = false;
                         break;
 
@@ -240,6 +245,54 @@ namespace CLI.LMS.UserSections
             }
 
             CourseSelectorMenu(selectedStudent);
+        }
+
+        public void SubmitAssignment(Course course, Student student)
+        {
+            if (!course.Assignments.Any())
+            {
+                Console.WriteLine("No assignments available.");
+                return;
+            }
+
+            Console.WriteLine("\nAssignments:");
+            foreach (var a in course.Assignments)
+            {
+                Console.WriteLine($"{a.Id} - {a.Name}");
+            }
+
+            Console.Write("\nEnter Assignment Id: ");
+            var input = Console.ReadLine()?.Trim() ?? "";
+
+            if (!int.TryParse(input, out int assignmentId))
+            {
+                Console.WriteLine("Invalid input.");
+                return;
+            }
+
+            var assignment = course.Assignments.FirstOrDefault(a => a.Id == assignmentId);
+
+            if (assignment == null)
+            {
+                Console.WriteLine("Assignment not found.");
+                return;
+            }
+
+            Console.Write("Enter submission content: ");
+            var content = Console.ReadLine()?.Trim() ?? "";
+
+            var submission = new Submission
+            {
+                StudentId = student.Id,
+                AssignmentId = assignment.Id,
+                Content = content,
+                SubmissionDate = DateTime.Now,
+                Id = assignment.Submissions.Any() ? assignment.Submissions.Max(s => s.Id) + 1 : 1
+            };
+
+            assignment.Submissions.Add(submission);
+
+            Console.WriteLine("Submission successful!");
         }
     }
 }
