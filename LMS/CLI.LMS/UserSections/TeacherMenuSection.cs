@@ -156,9 +156,11 @@ namespace CLI.LMS.UserSections
                 Console.WriteLine("4. Add assignment");
                 Console.WriteLine("5. Edit assignment");
                 Console.WriteLine("6. View assignments");
-                Console.WriteLine("7. View roster");
-                Console.WriteLine("8. View course schedule");
-                Console.WriteLine("9. Back");
+                Console.WriteLine("7. Delete assignments");
+                Console.WriteLine("8. Grade submissions");
+                Console.WriteLine("9. View roster");
+                Console.WriteLine("10. View course schedule");
+                Console.WriteLine("11. Back");
 
 
                 var choice = Console.ReadLine()?.Trim() ?? "";
@@ -188,16 +190,24 @@ namespace CLI.LMS.UserSections
                     case "6":
                         ShowAssignments(course);
                         break;
-
+                    
                     case "7":
-                        ShowRoster(course);
+                        DeleteAssignment(course);
                         break;
 
-                    case "8":
-                        ShowSchedule(course);
+                    case "8"://Issue #7 start: Grading submissions
+                        GradeSubmission(course);
                         break;
 
                     case "9":
+                        ShowRoster(course);
+                        break;
+
+                    case "10":
+                        ShowSchedule(course);
+                        break;
+
+                    case "11":
                         running = false;
                         break;
 
@@ -489,5 +499,134 @@ namespace CLI.LMS.UserSections
             Console.WriteLine("Assignment updated successfully!");
         }
 
+        //Issue #8: Deleting an assignment/submission by ID
+        public void DeleteAssignment(Course course)
+        {
+            if (!course.Assignments.Any())
+            {
+                Console.WriteLine("No assignments available to delete.");
+                return;
+            }
+
+            Console.WriteLine("\nAssignments:");
+            foreach (var a in course.Assignments)
+            {
+                Console.WriteLine($"{a.Id} - {a.Name}");
+            }
+
+            Console.Write("\nEnter Assignment Id to delete: ");
+            var input = Console.ReadLine()?.Trim() ?? "";
+
+            if (!int.TryParse(input, out int assignmentId))
+            {
+                Console.WriteLine("Invalid input.");
+                return;
+            }
+
+            var assignment = course.Assignments
+                .FirstOrDefault(a => a.Id == assignmentId);
+
+            if (assignment == null)
+            {
+                Console.WriteLine("Assignment not found.");
+                return;
+            }
+
+            //Confirm delete
+            Console.Write($"Are you sure you want to delete '{assignment.Name}'? (Y/N): ");
+            var confirm = Console.ReadLine()?.Trim() ?? "";
+
+            if (!confirm.Equals("Y", StringComparison.OrdinalIgnoreCase))
+            {
+                Console.WriteLine("Delete cancelled.");
+                return;
+            }
+
+            course.Assignments.Remove(assignment);
+
+            Console.WriteLine("Assignment and all submissions deleted.");
+        }
+
+        public void GradeSubmission(Course course)
+        {
+            if (!course.Assignments.Any())
+            {
+                Console.WriteLine("No assignments available.");
+                return;
+            }
+
+            //Select assignment
+            Console.WriteLine("\nAssignments:");
+            foreach (var a in course.Assignments)
+            {
+                Console.WriteLine($"{a.Id} - {a.Name}");
+            }
+
+            Console.Write("\nEnter Assignment Id: ");
+            var input = Console.ReadLine()?.Trim() ?? "";
+
+            if (!int.TryParse(input, out int assignmentId))
+            {
+                Console.WriteLine("Invalid input.");
+                return;
+            }
+
+            var assignment = course.Assignments
+                .FirstOrDefault(a => a.Id == assignmentId);
+
+            if (assignment == null)
+            {
+                Console.WriteLine("Assignment not found.");
+                return;
+            }
+
+            if (!assignment.Submissions.Any())
+            {
+                Console.WriteLine("No submissions for this assignment.");
+                return;
+            }
+
+            //Show submissions
+            Console.WriteLine("\nSubmissions:");
+            foreach (var s in assignment.Submissions)
+            {
+                Console.WriteLine($"{s.Id} - StudentId: {s.StudentId} | Submitted: {s.SubmissionDate}");
+            }
+
+            Console.Write("\nEnter Submission Id: ");
+            var subInput = Console.ReadLine()?.Trim() ?? "";
+
+            if (!int.TryParse(subInput, out int submissionId))
+            {
+                Console.WriteLine("Invalid input.");
+                return;
+            }
+
+            var submission = assignment.Submissions
+                .FirstOrDefault(s => s.Id == submissionId);
+
+            if (submission == null)
+            {
+                Console.WriteLine("Submission not found.");
+                return;
+            }
+
+            //Review content
+            Console.WriteLine($"\nContent:\n{submission.Content}");
+
+            //Assign grade
+            Console.Write("\nEnter grade (A number, not a letter grade): ");
+            var gradeInput = Console.ReadLine()?.Trim() ?? "";
+
+            if (!int.TryParse(gradeInput, out int grade))
+            {
+                Console.WriteLine("Invalid grade.");
+                return;
+            }
+
+            submission.Grade = grade;
+
+            Console.WriteLine("Submission graded successfully!");
+        }
     }
 }
