@@ -19,7 +19,7 @@ namespace CLI.LMS.UserSections
             var choice = Console.ReadLine();
 
             //if (choice.Equals("1"))
-            
+
             if ("1".Equals(choice))
             {
                 SubMenu();
@@ -100,7 +100,7 @@ namespace CLI.LMS.UserSections
             {
                 CourseSelectorMenu();
             }
-            
+
         }
 
         //Issue 17 start: Create teacher sub-menu
@@ -152,15 +152,16 @@ namespace CLI.LMS.UserSections
                 Console.WriteLine($"\nCourse: {course.Name} - {course.Code}");
                 Console.WriteLine("1. Enroll a student");
                 Console.WriteLine("2. Unenroll a student");
-                Console.WriteLine("3. View Modules");
-                Console.WriteLine("4. Add assignment");
-                Console.WriteLine("5. Edit assignment");
-                Console.WriteLine("6. View assignments");
-                Console.WriteLine("7. Delete assignments");
-                Console.WriteLine("8. Grade submissions");
-                Console.WriteLine("9. View roster");
-                Console.WriteLine("10. View course schedule");
-                Console.WriteLine("11. Back");
+                Console.WriteLine("3. View modules");
+                Console.WriteLine("4. Add modules");
+                Console.WriteLine("5. Add assignment");
+                Console.WriteLine("6. Edit assignment");
+                Console.WriteLine("7. View assignments");
+                Console.WriteLine("8. Delete assignments");
+                Console.WriteLine("9. Grade submissions");
+                Console.WriteLine("10. View roster");
+                Console.WriteLine("11. View course schedule");
+                Console.WriteLine("12. Back");
 
 
                 var choice = Console.ReadLine()?.Trim() ?? "";
@@ -180,34 +181,38 @@ namespace CLI.LMS.UserSections
                         break;
 
                     case "4":
-                        AddAssignment(course);
+                        AddModule(course);
                         break;
 
                     case "5":
-                        EditAssignment(course);
+                        AddAssignment(course);
                         break;
 
                     case "6":
+                        EditAssignment(course);
+                        break;
+
+                    case "7":
                         ShowAssignments(course);
                         break;
-                    
-                    case "7":
+
+                    case "8":
                         DeleteAssignment(course);
                         break;
 
-                    case "8"://Issue #7 start: Grading submissions
+                    case "9"://Issue #7 start: Grading submissions
                         GradeSubmission(course);
                         break;
 
-                    case "9":
+                    case "10":
                         ShowRoster(course);
                         break;
 
-                    case "10":
+                    case "11":
                         ShowSchedule(course);
                         break;
 
-                    case "11":
+                    case "12":
                         running = false;
                         break;
 
@@ -319,7 +324,7 @@ namespace CLI.LMS.UserSections
                     Console.WriteLine("--------------------------");
                     return;
                 }
-                
+
                 Console.WriteLine("\nExisting Students:");
                 foreach (var s in students)
                 {
@@ -466,7 +471,7 @@ namespace CLI.LMS.UserSections
                 return;
             }
 
-            
+
             Console.Write($"New Name (Current: {assignment.Name}): ");
             var newName = Console.ReadLine()?.Trim();
             if (!string.IsNullOrEmpty(newName))
@@ -617,7 +622,7 @@ namespace CLI.LMS.UserSections
             //Assign grade
             Console.Write("\nEnter grade (Input a whole number, not a letter grade): ");
             var gradeInput = Console.ReadLine()?.Trim() ?? "";
-            
+
             //If I want doubles change this
             if (!int.TryParse(gradeInput, out int grade))
             {
@@ -628,6 +633,58 @@ namespace CLI.LMS.UserSections
             submission.Grade = grade;
 
             Console.WriteLine("Submission graded successfully!");
+        }
+
+        //Issue #10: Add modules to course
+        public void AddModule(Course course)
+        {
+            var module = new Module();
+
+            Console.Write("Module Name: ");
+            module.Name = Console.ReadLine()?.Trim() ?? "";
+
+            bool addingResources = true;
+
+           /* //Handle existing assignments
+            Console.WriteLine("Would you like to add assignments to this module? (Y/N)");
+            var addAssignments = Console.ReadLine()?.Trim() ?? "";
+            if (addAssignments.Equals("Y", StringComparison.InvariantCultureIgnoreCase))
+            {
+                foreach (var assignment in course.Assignments)
+                {
+                    Console.WriteLine($"{assignment.Id} - {assignment.Name}");
+                }
+
+                bool addingAssignments = true;
+                while (addingAssignments)
+                {
+                    Console.Write("Enter assignment Id to add or N to stop: ");
+                    var input = Console.ReadLine()?.Trim() ?? "";
+                    if (input.Equals("N", StringComparison.InvariantCultureIgnoreCase))
+                        addingAssignments = false;
+                    else if (int.TryParse(input, out int aid))
+                    {
+                        var assignment = course.Assignments.FirstOrDefault(a => a.Id == aid);
+                        if (assignment != null)
+                        {
+                            module.Assignments.Add(assignment);
+                            Console.WriteLine($"Added {assignment.Name} to module");
+                        }
+                        else
+                            Console.WriteLine("Assignment not found");
+                    }
+                    else
+                    {
+                        Console.WriteLine("Invalid input");
+                    }
+                }
+            }*/
+
+            // Add module to course
+            module.Id = course.Modules.Any() ? course.Modules.Max(m => m.Id) + 1 : 1;
+            course.Modules.Add(module);
+
+            Console.WriteLine($"Module {module.Name} added to course {course.Name}!");
         }
     }
 }
