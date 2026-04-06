@@ -594,9 +594,9 @@ namespace CLI.LMS.UserSections
             }
 
             Console.Write("\nEnter Submission Id: ");
-            var subInput = Console.ReadLine()?.Trim() ?? "";
+            var subId = Console.ReadLine()?.Trim() ?? "";
 
-            if (!int.TryParse(subInput, out int submissionId))
+            if (!int.TryParse(subId, out int submissionId))
             {
                 Console.WriteLine("Invalid input.");
                 return;
@@ -615,9 +615,10 @@ namespace CLI.LMS.UserSections
             Console.WriteLine($"\nContent:\n{submission.Content}");
 
             //Assign grade
-            Console.Write("\nEnter grade (A number, not a letter grade): ");
+            Console.Write("\nEnter grade (Input a whole number, not a letter grade): ");
             var gradeInput = Console.ReadLine()?.Trim() ?? "";
-
+            
+            //If I want doubles change this
             if (!int.TryParse(gradeInput, out int grade))
             {
                 Console.WriteLine("Invalid grade.");

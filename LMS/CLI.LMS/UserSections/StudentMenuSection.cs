@@ -97,7 +97,7 @@ namespace CLI.LMS.UserSections
                         break;
 
                     case "3":
-                        ShowAssignments(course);
+                        ShowAssignments(course, student);
                         break;
 
                     case "4":
@@ -138,7 +138,7 @@ namespace CLI.LMS.UserSections
             }
         }
 
-        public void ShowAssignments(Course course)
+        public void ShowAssignments(Course course, Student student)
         {
             if (!course.Assignments.Any())
             {
@@ -147,9 +147,31 @@ namespace CLI.LMS.UserSections
             }
 
             Console.WriteLine("\nAssignments:");
-            foreach (var assignments in course.Assignments)
+
+            foreach (var assignment in course.Assignments)
             {
-                Console.WriteLine(assignments.Name);
+                Console.WriteLine($"\n{assignment.Id} - {assignment.Name}");
+
+                var submission = assignment.Submissions
+                    .FirstOrDefault(s => s.StudentId == student.Id);
+
+                if (submission != null)
+                {
+                    Console.WriteLine($"  Submitted: {submission.SubmissionDate}");
+
+                    if (submission.Grade.HasValue)
+                    {
+                        Console.WriteLine($"  Grade: {submission.Grade}");
+                    }
+                    else
+                    {
+                        Console.WriteLine("  Grade: Not graded yet");
+                    }
+                }
+                else
+                {
+                    Console.WriteLine("  No submission yet");
+                }
             }
         }
 
