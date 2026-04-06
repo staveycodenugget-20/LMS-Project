@@ -643,44 +643,67 @@ namespace CLI.LMS.UserSections
             Console.Write("Module Name: ");
             module.Name = Console.ReadLine()?.Trim() ?? "";
 
-            bool addingResources = true;
+            bool addingContent = true;
 
-           /* //Handle existing assignments
-            Console.WriteLine("Would you like to add assignments to this module? (Y/N)");
-            var addAssignments = Console.ReadLine()?.Trim() ?? "";
-            if (addAssignments.Equals("Y", StringComparison.InvariantCultureIgnoreCase))
+            //Each entry adds content as a string to a list of strings
+            while (addingContent)
             {
-                foreach (var assignment in course.Assignments)
-                {
-                    Console.WriteLine($"{assignment.Id} - {assignment.Name}");
-                }
+                Console.Write("Enter module content (or type N to stop): ");
+                var input = Console.ReadLine()?.Trim() ?? "";
 
-                bool addingAssignments = true;
-                while (addingAssignments)
+                if (input.Equals("N", StringComparison.InvariantCultureIgnoreCase))
                 {
-                    Console.Write("Enter assignment Id to add or N to stop: ");
-                    var input = Console.ReadLine()?.Trim() ?? "";
-                    if (input.Equals("N", StringComparison.InvariantCultureIgnoreCase))
-                        addingAssignments = false;
-                    else if (int.TryParse(input, out int aid))
-                    {
-                        var assignment = course.Assignments.FirstOrDefault(a => a.Id == aid);
-                        if (assignment != null)
-                        {
-                            module.Assignments.Add(assignment);
-                            Console.WriteLine($"Added {assignment.Name} to module");
-                        }
-                        else
-                            Console.WriteLine("Assignment not found");
-                    }
-                    else
-                    {
-                        Console.WriteLine("Invalid input");
-                    }
+                    addingContent = false;
                 }
-            }*/
+                else if (!string.IsNullOrEmpty(input))
+                {
+                    module.Content.Add(input);
+                }
+                else
+                {
+                    Console.WriteLine("Invalid input.");
+                }
+            }
 
-            // Add module to course
+            /* //Handle existing assignments
+             Console.WriteLine("Would you like to add assignments to this module? (Y/N)");
+             var addAssignments = Console.ReadLine()?.Trim() ?? "";
+             if (addAssignments.Equals("Y", StringComparison.InvariantCultureIgnoreCase))
+             {
+                 foreach (var assignment in course.Assignments)
+                 {
+                     Console.WriteLine($"{assignment.Id} - {assignment.Name}");
+                 }
+
+                 bool addingAssignments = true;
+                 while (addingAssignments)
+                 {
+                     Console.Write("Enter assignment Id to add or N to stop: ");
+                     var input = Console.ReadLine()?.Trim() ?? "";
+                     if (input.Equals("N", StringComparison.InvariantCultureIgnoreCase))
+                         addingAssignments = false;
+                     else if (int.TryParse(input, out int aid))
+                     {
+                         var assignment = course.Assignments.FirstOrDefault(a => a.Id == aid);
+                         if (assignment != null)
+                         {
+                             module.Assignments.Add(assignment);
+                             Console.WriteLine($"Added {assignment.Name} to module");
+                         }
+                         else
+                             Console.WriteLine("Assignment not found");
+                     }
+                     else
+                     {
+                         Console.WriteLine("Invalid input");
+                     }
+                 }
+             }*/
+
+            /* Test if each string is added to the list of content
+            Console.WriteLine(module.Content);
+            */
+
             module.Id = course.Modules.Any() ? course.Modules.Max(m => m.Id) + 1 : 1;
             course.Modules.Add(module);
 
