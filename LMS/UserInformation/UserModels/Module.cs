@@ -11,6 +11,9 @@ namespace UserInformation.UserModels
         public List<string> Content { get; set; }
         public string Name { get; set; }
 
-
+        public Module()
+        {
+            Content = new List<string>();
+        }
     }
 }
