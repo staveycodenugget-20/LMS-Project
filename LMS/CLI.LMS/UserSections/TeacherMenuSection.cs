@@ -155,14 +155,15 @@ namespace CLI.LMS.UserSections
                 Console.WriteLine("3. View modules");
                 Console.WriteLine("4. Add modules");
                 Console.WriteLine("5. Edit modules");
-                Console.WriteLine("6. Add assignment");
-                Console.WriteLine("7. Edit assignment");
-                Console.WriteLine("8. View assignments");
-                Console.WriteLine("9. Delete assignments");
-                Console.WriteLine("10. Grade submissions");
-                Console.WriteLine("11. View roster");
-                Console.WriteLine("12. View course schedule");
-                Console.WriteLine("13. Back");
+                Console.WriteLine("6. Remove module");
+                Console.WriteLine("7. Add assignment");
+                Console.WriteLine("8. Edit assignment");
+                Console.WriteLine("9. View assignments");
+                Console.WriteLine("10. Delete assignments");
+                Console.WriteLine("11. Grade submissions");
+                Console.WriteLine("12. View roster");
+                Console.WriteLine("13. View course schedule");
+                Console.WriteLine("14. Back");
 
 
                 var choice = Console.ReadLine()?.Trim() ?? "";
@@ -190,34 +191,38 @@ namespace CLI.LMS.UserSections
                         break;
 
                     case "6":
-                        AddAssignment(course);
+                        RemoveModuleContent(course);
                         break;
 
                     case "7":
-                        EditAssignment(course);
+                        AddAssignment(course);
                         break;
 
                     case "8":
-                        ShowAssignments(course);
+                        EditAssignment(course);
                         break;
 
                     case "9":
-                        DeleteAssignment(course);
+                        ShowAssignments(course);
                         break;
 
-                    case "10"://Issue #7 start: Grading submissions
+                    case "10":
+                        RemoveAssignment(course);
+                        break;
+
+                    case "11"://Issue #7 start: Grading submissions
                         GradeSubmission(course);
                         break;
 
-                    case "11":
+                    case "12":
                         ShowRoster(course);
                         break;
 
-                    case "12":
+                    case "13":
                         ShowSchedule(course);
                         break;
 
-                    case "13":
+                    case "14":
                         running = false;
                         break;
 
@@ -510,7 +515,7 @@ namespace CLI.LMS.UserSections
         }
 
         //Issue #8: Deleting an assignment/submission by ID
-        public void DeleteAssignment(Course course)
+        public void RemoveAssignment(Course course)
         {
             if (!course.Assignments.Any())
             {
@@ -714,7 +719,7 @@ namespace CLI.LMS.UserSections
 
             Console.WriteLine($"Module {module.Name} added to course {course.Name}!");
         }
-        //Issue #12: Edit module content
+        //Issue #12: Edit module content. Needs an add module content butto for modules made with no content
         public void EditModule(Course course)
         {
             if (!course.Modules.Any())
@@ -781,5 +786,67 @@ namespace CLI.LMS.UserSections
 
             Console.WriteLine("Module content updated successfully!");
         }
+        //Issue #13: Remove module content, not entire module
+
+        public void RemoveModuleContent(Course course)
+        {
+            if (!course.Modules.Any())
+            {
+                Console.WriteLine("No modules available.");
+                return;
+            }
+
+            Console.WriteLine("\nModules:");
+            foreach (var m in course.Modules)
+            {
+                Console.WriteLine($"{m.Id} - {m.Name}");
+            }
+
+            Console.Write("\nSelect Module Id: ");
+            var input = Console.ReadLine()?.Trim() ?? "";
+
+            if (!int.TryParse(input, out int moduleId))
+            {
+                Console.WriteLine("Invalid module Id.");
+                return;
+            }
+
+            var module = course.Modules.FirstOrDefault(m => m.Id == moduleId);
+
+            if (module == null)
+            {
+                Console.WriteLine("Module not found.");
+                return;
+            }
+
+            if (!module.Content.Any())
+            {
+                Console.WriteLine("No content to remove.");
+                return;
+            }
+
+            Console.WriteLine("\nModule Content:");
+            for (int i = 0; i < module.Content.Count; i++)
+            {
+                Console.WriteLine($"{i}. {module.Content[i]}");
+            }
+
+            Console.Write("\nSelect content number to remove: ");
+            var choice = Console.ReadLine()?.Trim() ?? "";
+
+            if (!int.TryParse(choice, out int index) ||
+                index < 0 ||
+                index >= module.Content.Count)
+            {
+                Console.WriteLine("Invalid selection.");
+                return;
+            }
+
+            var removed = module.Content[index];
+            module.Content.RemoveAt(index);
+
+            Console.WriteLine($"Removed content: {removed}");
+        }
+
     }
 }
