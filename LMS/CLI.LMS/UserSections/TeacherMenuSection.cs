@@ -86,7 +86,8 @@ namespace CLI.LMS.UserSections
             Console.WriteLine("--------------------------");
             Console.WriteLine("Course Manager (Sub-Menu):");
             Console.WriteLine("1. Add a course");
-            Console.WriteLine("2. Select existing course Menu");
+            Console.WriteLine("2. Remove a course");
+            Console.WriteLine("3. Select existing course Menu");
             Console.WriteLine("--------------------------\n");
 
             var choice = Console.ReadLine();
@@ -97,6 +98,10 @@ namespace CLI.LMS.UserSections
                 CourseServiceProxy.Current.Add(newCourse);
             }
             else if ("2".Equals(choice))
+            {
+                DeleteCourse();
+            }
+            else if ("3".Equals(choice))
             {
                 CourseSelectorMenu();
             }
@@ -847,6 +852,45 @@ namespace CLI.LMS.UserSections
 
             Console.WriteLine($"Removed content: {removed}");
         }
+        //#14: Remove course
 
+        public void DeleteCourse()
+        {
+            var courses = CourseServiceProxy.Current.Courses;
+
+            if (!courses.Any())
+            {
+                Console.WriteLine("No courses available.");
+                return;
+            }
+
+            Console.WriteLine("\nCourses:");
+            foreach (var c in courses)
+            {
+                Console.WriteLine($"{c.Id} - {c.Name} {c.Code}");
+            }
+
+            Console.Write("\nEnter Course Id to delete: ");
+            var input = Console.ReadLine()?.Trim() ?? "";
+
+            if (!int.TryParse(input, out int courseId))
+            {
+                Console.WriteLine("Invalid input.");
+                return;
+            }
+
+            var course = courses.FirstOrDefault(c => c.Id == courseId);
+
+            if (course == null)
+            {
+                Console.WriteLine("Course not found.");
+                return;
+            }
+
+            courses.Remove(course);
+
+            Console.WriteLine("Course deleted successfully.");
+
+        }
     }
 }
