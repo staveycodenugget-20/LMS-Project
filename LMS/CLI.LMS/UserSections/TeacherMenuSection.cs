@@ -13,7 +13,7 @@ namespace CLI.LMS.UserSections
         {
             Console.WriteLine("--------------------------");
             Console.WriteLine("Teacher Main Menu:");
-            Console.WriteLine("1. Add/Select a Course Menu");
+            Console.WriteLine("1. Course Manager Menu");
             Console.WriteLine("--------------------------\n");
 
             var choice = Console.ReadLine();
@@ -157,18 +157,19 @@ namespace CLI.LMS.UserSections
                 Console.WriteLine($"\nCourse: {course.Name} - {course.Code}");
                 Console.WriteLine("1. Enroll a student");
                 Console.WriteLine("2. Unenroll a student");
-                Console.WriteLine("3. View modules");
-                Console.WriteLine("4. Add modules");
-                Console.WriteLine("5. Edit modules");
-                Console.WriteLine("6. Remove module");
-                Console.WriteLine("7. Add assignment");
-                Console.WriteLine("8. Edit assignment");
-                Console.WriteLine("9. View assignments");
-                Console.WriteLine("10. Delete assignments");
-                Console.WriteLine("11. Grade submissions");
-                Console.WriteLine("12. View roster");
-                Console.WriteLine("13. View course schedule");
-                Console.WriteLine("14. Back");
+                Console.WriteLine("3. Edit course description");
+                Console.WriteLine("4. View modules");
+                Console.WriteLine("5. Add modules");
+                Console.WriteLine("6. Edit modules");
+                Console.WriteLine("7. Remove module");
+                Console.WriteLine("8. Add assignment");
+                Console.WriteLine("9. Edit assignment");
+                Console.WriteLine("10. View assignments");
+                Console.WriteLine("11. Delete assignments");
+                Console.WriteLine("12. Grade submissions");
+                Console.WriteLine("13. View roster");
+                Console.WriteLine("14. View course schedule");
+                Console.WriteLine("15. Back");
 
 
                 var choice = Console.ReadLine()?.Trim() ?? "";
@@ -184,50 +185,54 @@ namespace CLI.LMS.UserSections
                         break;
 
                     case "3":
-                        ShowModules(course);
+                        EditCourseDescription(course);
                         break;
 
                     case "4":
-                        AddModule(course);
+                        ShowModules(course);
                         break;
 
                     case "5":
-                        EditModule(course);
+                        AddModule(course);
                         break;
 
                     case "6":
-                        RemoveModuleContent(course);
+                        EditModule(course);
                         break;
 
                     case "7":
-                        AddAssignment(course);
+                        RemoveModuleContent(course);
                         break;
 
                     case "8":
-                        EditAssignment(course);
+                        AddAssignment(course);
                         break;
 
                     case "9":
-                        ShowAssignments(course);
+                        EditAssignment(course);
                         break;
 
                     case "10":
+                        ShowAssignments(course);
+                        break;
+
+                    case "11":
                         RemoveAssignment(course);
                         break;
 
-                    case "11"://Issue #7 start: Grading submissions
+                    case "12"://Issue #7 start: Grading submissions
                         GradeSubmission(course);
                         break;
 
-                    case "12":
+                    case "13":
                         ShowRoster(course);
                         break;
 
-                    case "13":
+                    case "14":
                         ShowSchedule(course);
                         break;
 
-                    case "14":
+                    case "15":
                         running = false;
                         break;
 
@@ -891,6 +896,25 @@ namespace CLI.LMS.UserSections
 
             Console.WriteLine("Course deleted successfully.");
 
+        }
+
+        //Issue #15: Edit course description
+        public void EditCourseDescription(Course course)
+        {
+            Console.WriteLine($"\nCurrent Description: {course.Description}");
+
+            Console.Write("Enter new description: ");
+            var newDescription = Console.ReadLine()?.Trim() ?? "";
+
+            if (string.IsNullOrEmpty(newDescription))
+            {
+                Console.WriteLine("Description cannot be empty.");
+                return;
+            }
+
+            course.Description = newDescription;
+
+            Console.WriteLine("Course description updated successfully!");
         }
     }
 }
