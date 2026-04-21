@@ -122,7 +122,7 @@ namespace CLI.LMS.UserSections
                 }
             }
         }
-
+        //Updte for issue #19: Students can't see module content, but can see module names.
         public void ShowModules(Course course)
         {
             if (!course.Modules.Any())
@@ -132,9 +132,23 @@ namespace CLI.LMS.UserSections
             }
 
             Console.WriteLine("\nModules:");
+
             foreach (var module in course.Modules)
             {
-                Console.WriteLine(module.Name);
+                Console.WriteLine($"\nModule: {module.Name}");
+
+                if (!module.Content.Any())
+                {
+                    Console.WriteLine("  No content available.");
+                }
+                else
+                {
+                    Console.WriteLine("  Content:");
+                    foreach (var item in module.Content)
+                    {
+                        Console.WriteLine($"   - {item}");
+                    }
+                }
             }
         }
 
