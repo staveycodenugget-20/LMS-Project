@@ -131,22 +131,31 @@ namespace CLI.LMS.UserSections
                 return;
             }
 
-            Console.WriteLine("\nModules:");
-
             foreach (var module in course.Modules)
             {
                 Console.WriteLine($"\nModule: {module.Name}");
 
-                if (!module.Content.Any())
+                if (!module.Contents.Any())
                 {
-                    Console.WriteLine("  No content available.");
+                    Console.WriteLine("  No content.");
+                    continue;
                 }
-                else
+
+                foreach (var item in module.Contents)
                 {
-                    Console.WriteLine("  Content:");
-                    foreach (var item in module.Content)
+                    if (item is PageItem page)
                     {
-                        Console.WriteLine($"   - {item}");
+                        Console.WriteLine($"  [Page] {page.Title}");
+                        Console.WriteLine($"    {page.Content}");
+                    }
+                    else if (item is FileItem file)
+                    {
+                        Console.WriteLine($"  [File] {file.Title} (Path: {file.FilePath})");
+                        Console.WriteLine($"Opening file: {file.FilePath}");
+                    }
+                    else if (item is AssignmentItem assignmentItem)
+                    {
+                        Console.WriteLine($"  [Assignment] {assignmentItem.Assignment?.Name}");
                     }
                 }
             }

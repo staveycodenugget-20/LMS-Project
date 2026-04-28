@@ -160,16 +160,17 @@ namespace CLI.LMS.UserSections
                 Console.WriteLine("3. Edit course description");
                 Console.WriteLine("4. View modules");
                 Console.WriteLine("5. Add modules");
-                Console.WriteLine("6. Edit modules");
-                Console.WriteLine("7. Remove module");
-                Console.WriteLine("8. Add assignment");
-                Console.WriteLine("9. Edit assignment");
-                Console.WriteLine("10. View assignments");
-                Console.WriteLine("11. Delete assignments");
-                Console.WriteLine("12. Grade submissions");
-                Console.WriteLine("13. View roster");
-                Console.WriteLine("14. View course schedule");
-                Console.WriteLine("15. Back");
+                Console.WriteLine("6. Add module content");
+                Console.WriteLine("7. Edit modules");
+                Console.WriteLine("8. Remove module");
+                Console.WriteLine("9. Add assignment");
+                Console.WriteLine("10. Edit assignment");
+                Console.WriteLine("11. View assignments");
+                Console.WriteLine("12. Delete assignments");
+                Console.WriteLine("13. Grade submissions");
+                Console.WriteLine("14. View roster");
+                Console.WriteLine("15. View course schedule");
+                Console.WriteLine("16. Back");
 
 
                 var choice = Console.ReadLine()?.Trim() ?? "";
@@ -197,42 +198,46 @@ namespace CLI.LMS.UserSections
                         break;
 
                     case "6":
-                        EditModule(course);
+                        AddModuleContent(course);
                         break;
 
                     case "7":
-                        RemoveModuleContent(course);
+                        EditModule(course);
                         break;
 
                     case "8":
-                        AddAssignment(course);
+                        RemoveModuleContent(course);
                         break;
 
                     case "9":
-                        EditAssignment(course);
+                        AddAssignment(course);
                         break;
 
                     case "10":
-                        ShowAssignments(course);
+                        EditAssignment(course);
                         break;
 
                     case "11":
+                        ShowAssignments(course);
+                        break;
+
+                    case "12":
                         RemoveAssignment(course);
                         break;
 
-                    case "12"://Issue #7 start: Grading submissions
+                    case "13"://Issue #7 start: Grading submissions
                         GradeSubmission(course);
                         break;
 
-                    case "13":
+                    case "14":
                         ShowRoster(course);
                         break;
 
-                    case "14":
+                    case "15":
                         ShowSchedule(course);
                         break;
 
-                    case "15":
+                    case "16":
                         running = false;
                         break;
 
@@ -668,6 +673,7 @@ namespace CLI.LMS.UserSections
             //Each entry adds content as a string to a list of strings
             while (addingContent)
             {
+                //COntent treated as pages
                 Console.Write("Enter module content (or type N to stop): ");
                 var input = Console.ReadLine()?.Trim() ?? "";
 
@@ -677,52 +683,19 @@ namespace CLI.LMS.UserSections
                 }
                 else if (!string.IsNullOrEmpty(input))
                 {
-                    module.Content.Add(input);
+                    var page = new PageItem
+                    {
+                        Title = "Page",
+                        Content = input
+                    };
+
+                    module.Contents.Add(page);
                 }
                 else
                 {
                     Console.WriteLine("Invalid input.");
                 }
             }
-
-            /* //Handle existing assignments
-             Console.WriteLine("Would you like to add assignments to this module? (Y/N)");
-             var addAssignments = Console.ReadLine()?.Trim() ?? "";
-             if (addAssignments.Equals("Y", StringComparison.InvariantCultureIgnoreCase))
-             {
-                 foreach (var assignment in course.Assignments)
-                 {
-                     Console.WriteLine($"{assignment.Id} - {assignment.Name}");
-                 }
-
-                 bool addingAssignments = true;
-                 while (addingAssignments)
-                 {
-                     Console.Write("Enter assignment Id to add or N to stop: ");
-                     var input = Console.ReadLine()?.Trim() ?? "";
-                     if (input.Equals("N", StringComparison.InvariantCultureIgnoreCase))
-                         addingAssignments = false;
-                     else if (int.TryParse(input, out int aid))
-                     {
-                         var assignment = course.Assignments.FirstOrDefault(a => a.Id == aid);
-                         if (assignment != null)
-                         {
-                             module.Assignments.Add(assignment);
-                             Console.WriteLine($"Added {assignment.Name} to module");
-                         }
-                         else
-                             Console.WriteLine("Assignment not found");
-                     }
-                     else
-                     {
-                         Console.WriteLine("Invalid input");
-                     }
-                 }
-             }*/
-
-            /* //Test if each string is added to the list of content
-            Console.WriteLine(module.Content);
-            */
 
             module.Id = course.Modules.Any() ? course.Modules.Max(m => m.Id) + 1 : 1;
             course.Modules.Add(module);
@@ -761,28 +734,28 @@ namespace CLI.LMS.UserSections
                 return;
             }
 
-            if (!module.Content.Any())
+            if (!module.Contents.Any())
             {
                 Console.WriteLine("No content to edit.");
                 return;
             }
 
             Console.WriteLine("\nModule Content:");
-            for (int i = 0; i < module.Content.Count; i++)
+            for (int i = 0; i < module.Contents.Count; i++)
             {
-                Console.WriteLine($"{i}. {module.Content[i]}");
+                Console.WriteLine($"{i}. {module.Contents[i]}");
             }
 
             Console.Write("\nSelect content number to edit: ");
             var contentInput = Console.ReadLine()?.Trim() ?? "";
 
-            if (!int.TryParse(contentInput, out int index) || index < 0 || index >= module.Content.Count)
+            if (!int.TryParse(contentInput, out int index) || index < 0 || index >= module.Contents.Count)
             {
                 Console.WriteLine("Invalid selection.");
                 return;
             }
 
-            Console.WriteLine($"\nCurrent: {module.Content[index]}");
+            Console.WriteLine($"\nCurrent: {module.Contents[index]}");
             Console.Write("Enter new content: ");
             var newContent = Console.ReadLine()?.Trim() ?? "";
 
@@ -792,7 +765,23 @@ namespace CLI.LMS.UserSections
                 return;
             }
 
-            module.Content[index] = newContent;
+            var item = module.Contents[index];
+
+            if (item is PageItem page)
+            {
+                page.Content = newContent;
+            }
+            else if (item is FileItem file)
+            {
+                file.FilePath = newContent;
+            }
+            else if (item is AssignmentItem assignmentItem)
+            {
+                if (assignmentItem.Assignment != null)
+                {
+                    assignmentItem.Assignment.Description = newContent;
+                }
+            }
 
             Console.WriteLine("Module content updated successfully!");
         }
@@ -829,16 +818,16 @@ namespace CLI.LMS.UserSections
                 return;
             }
 
-            if (!module.Content.Any())
+            if (!module.Contents.Any())
             {
                 Console.WriteLine("No content to remove.");
                 return;
             }
 
             Console.WriteLine("\nModule Content:");
-            for (int i = 0; i < module.Content.Count; i++)
+            for (int i = 0; i < module.Contents.Count; i++)
             {
-                Console.WriteLine($"{i}. {module.Content[i]}");
+                Console.WriteLine($"{i}. {module.Contents[i]}");
             }
 
             Console.Write("\nSelect content number to remove: ");
@@ -846,14 +835,14 @@ namespace CLI.LMS.UserSections
 
             if (!int.TryParse(choice, out int index) ||
                 index < 0 ||
-                index >= module.Content.Count)
+                index >= module.Contents.Count)
             {
                 Console.WriteLine("Invalid selection.");
                 return;
             }
 
-            var removed = module.Content[index];
-            module.Content.RemoveAt(index);
+            var removed = module.Contents[index];
+            module.Contents.RemoveAt(index);
 
             Console.WriteLine($"Removed content: {removed}");
         }
@@ -916,5 +905,134 @@ namespace CLI.LMS.UserSections
 
             Console.WriteLine("Course description updated successfully!");
         }
+
+        //Adds for #21
+        public void AddModuleContent(Course course)
+        {
+            if (!course.Modules.Any())
+            {
+                Console.WriteLine("No modules available.");
+                return;
+            }
+
+            Console.WriteLine("\nModules:");
+            foreach (var m in course.Modules)
+            {
+                Console.WriteLine($"{m.Id} - {m.Name}");
+            }
+
+            Console.Write("Select Module Id: ");
+            var input = Console.ReadLine()?.Trim() ?? "";
+
+            if (!int.TryParse(input, out int moduleId))
+            {
+                Console.WriteLine("Invalid input.");
+                return;
+            }
+
+            var module = course.Modules.FirstOrDefault(m => m.Id == moduleId);
+
+            if (module == null)
+            {
+                Console.WriteLine("Module not found.");
+                return;
+            }
+
+            Console.WriteLine("\n1. Add Page");
+            Console.WriteLine("2. Add File");
+            Console.WriteLine("3. Add Assignment");
+
+            var choice = Console.ReadLine();
+
+            switch (choice)
+            {
+                case "1":
+                    AddPage(module);
+                    break;
+                case "2":
+                    AddFile(module);
+                    break;
+                case "3":
+                    AddAssignmentToModule(course, module);
+                    break;
+            }
+        }
+        private void AddPage(Module module)
+        {
+            var page = new PageItem();
+
+            Console.Write("Title: ");
+            page.Title = Console.ReadLine()?.Trim() ?? "";
+
+            Console.Write("Content: ");
+            page.Content = Console.ReadLine()?.Trim() ?? "";
+
+            page.Id = module.Contents.Any() ? module.Contents.Max(c => c.Id) + 1 : 1;
+
+            module.Contents.Add(page);
+
+            Console.WriteLine("Page added!");
+        }
+        private void AddFile(Module module)
+        {
+            var file = new FileItem();
+
+            Console.Write("File name: ");
+            file.Title = Console.ReadLine()?.Trim() ?? "";
+
+            Console.Write("File path: ");
+            file.FilePath = Console.ReadLine()?.Trim() ?? "";
+
+            file.Id = module.Contents.Any() ? module.Contents.Max(c => c.Id) + 1 : 1;
+
+            module.Contents.Add(file);
+
+            Console.WriteLine("File added!");
+        }
+        private void AddAssignmentToModule(Course course, Module module)
+        {
+            if (!course.Assignments.Any())
+            {
+                Console.WriteLine("No assignments available.");
+                return;
+            }
+
+            Console.WriteLine("\nAssignments:");
+            foreach (var a in course.Assignments)
+            {
+                Console.WriteLine($"{a.Id} - {a.Name}");
+            }
+
+            Console.Write("Enter Assignment Id: ");
+            var input = Console.ReadLine()?.Trim() ?? "";
+
+            if (!int.TryParse(input, out int id))
+            {
+                Console.WriteLine("Invalid input.");
+                return;
+            }
+
+            var assignment = course.Assignments.FirstOrDefault(a => a.Id == id);
+
+            if (assignment == null)
+            {
+                Console.WriteLine("Assignment not found.");
+                return;
+            }
+
+            var item = new AssignmentItem
+            {
+                Id = module.Contents.Any() ? module.Contents.Max(c => c.Id) + 1 : 1,
+                Title = assignment.Name,
+                Assignment = assignment
+            };
+
+            module.Contents.Add(item);
+
+            Console.WriteLine("Assignment added to module!");
+        }
+
     }
+
+
 }

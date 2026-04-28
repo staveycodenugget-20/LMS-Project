@@ -8,12 +8,12 @@ namespace UserInformation.UserModels
     {
 
         public int Id { get; set; }
-        public List<string> Content { get; set; }
+        public List<ModuleContent> Contents { get; set; }
         public string Name { get; set; }
 
         public Module()
         {
-            Content = new List<string>();
+            Contents = new List<ModuleContent>();
         }
     }
 }
