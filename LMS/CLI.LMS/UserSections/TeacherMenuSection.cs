@@ -1036,7 +1036,7 @@ namespace CLI.LMS.UserSections
 
             Console.WriteLine("Assignment added to module!");
         }
-
+        //Issue #22: Manage assignment groups
         public void ManageAssignmentGroups(Course course)
         {
             bool running = true;
@@ -1049,7 +1049,8 @@ namespace CLI.LMS.UserSections
                 Console.WriteLine("3. Delete Group");
                 Console.WriteLine("4. List Groups");
                 Console.WriteLine("5. Add Assignment to Group");
-                Console.WriteLine("6. Back");
+                Console.WriteLine("6. Edit Group Weight");
+                Console.WriteLine("7. Back");
 
                 var choice = Console.ReadLine();
 
@@ -1071,6 +1072,9 @@ namespace CLI.LMS.UserSections
                         AddAssignmentToGroup(course);
                         break;
                     case "6":
+                        EditGroupWeight(course);
+                        break;
+                    case "7":
                         running = false;
                         break;
                 }
@@ -1198,6 +1202,51 @@ namespace CLI.LMS.UserSections
             group.Assignments.Add(assignment);
 
             Console.WriteLine("Assignment added to group!");
+        }
+        public void EditGroupWeight(Course course)
+        {
+            if (!course.AssignmentGroups.Any())
+            {
+                Console.WriteLine("No groups available.");
+                return;
+            }
+
+            Console.WriteLine("\nAssignment Groups:");
+            foreach (var g in course.AssignmentGroups)
+            {
+                Console.WriteLine($"{g.Id} - {g.Name} ({g.Weight}%)");
+            }
+
+            Console.Write("\nEnter Group Id: ");
+            var input = Console.ReadLine()?.Trim() ?? "";
+
+            if (!int.TryParse(input, out int groupId))
+            {
+                Console.WriteLine("Invalid input.");
+                return;
+            }
+
+            var group = course.AssignmentGroups.FirstOrDefault(g => g.Id == groupId);
+
+            if (group == null)
+            {
+                Console.WriteLine("Group not found.");
+                return;
+            }
+
+            Console.Write($"Current Weight: {group.Weight}%\n");
+            Console.Write("Enter new weight: ");
+            var weightInput = Console.ReadLine()?.Trim() ?? "";
+
+            if (!double.TryParse(weightInput, out double newWeight))
+            {
+                Console.WriteLine("Invalid weight.");
+                return;
+            }
+
+            group.Weight = newWeight;
+
+            Console.WriteLine("Group weight updated!");
         }
     }
 
