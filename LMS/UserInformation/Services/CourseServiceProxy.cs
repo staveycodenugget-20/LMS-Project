@@ -60,7 +60,8 @@ namespace UserInformation.Services
                 Id = LastKey + 1,
                 Name = original.Name + " (Copy)",
                 Code = original.Code,
-                Description = original.Description
+                Description = original.Description,
+                Semester = original.Semester
             };
 
             foreach (var module in original.Modules)
@@ -94,7 +95,7 @@ namespace UserInformation.Services
                         newModule.Contents.Add(new AssignmentItem
                         {
                             Id = assignmentItem.Id,
-                            Assignment = assignmentItem.Assignment 
+                            Assignment = assignmentItem.Assignment
                         });
                     }
                 }
@@ -113,7 +114,7 @@ namespace UserInformation.Services
 
                 foreach (var assignment in group.Assignments)
                 {
-                    newGroup.Assignments.Add(assignment); 
+                    newGroup.Assignments.Add(assignment);
                 }
 
                 newCourse.AssignmentGroups.Add(newGroup);
@@ -123,8 +124,7 @@ namespace UserInformation.Services
 
             return newCourse;
         }
-        
-        }
 
     }
+}
 

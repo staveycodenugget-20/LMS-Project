@@ -44,7 +44,7 @@ namespace CLI.LMS.UserSections
 
             foreach (var c in enrolledCourses)
             {
-                Console.WriteLine($"{c.Id} - {c.Name}: {c.Code}");
+                Console.WriteLine($"{c.Id} - {c.Name} ({c.Code}) - {c.Semester}");
             }
 
             Console.Write("\nEnter course Id (The number before the course name/code): ");
