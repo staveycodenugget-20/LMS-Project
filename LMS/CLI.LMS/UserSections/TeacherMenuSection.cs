@@ -78,6 +78,24 @@ namespace CLI.LMS.UserSections
             Console.Write("Description: ");
             newCourse.Description = Console.ReadLine()?.Trim() ?? "";
 
+            Console.Write("Semester (e.g., Fall 2026): ");
+            newCourse.Semester = Console.ReadLine()?.Trim() ?? "";
+
+            string semester;
+            do
+            {
+                Console.Write("Semester (required): ");
+                semester = Console.ReadLine()?.Trim() ?? "";
+
+                if (string.IsNullOrEmpty(semester))
+                {
+                    Console.WriteLine("Semester cannot be empty.");
+                }
+
+            } while (string.IsNullOrEmpty(semester));
+
+            newCourse.Semester = semester;
+
             return newCourse;
         }
 
@@ -86,8 +104,9 @@ namespace CLI.LMS.UserSections
             Console.WriteLine("--------------------------");
             Console.WriteLine("Course Manager (Sub-Menu):");
             Console.WriteLine("1. Add a course");
-            Console.WriteLine("2. Remove a course");
-            Console.WriteLine("3. Select existing course Menu");
+            Console.WriteLine("2. Copy a course");
+            Console.WriteLine("3. Remove a course");
+            Console.WriteLine("4. Select existing course Menu");
             Console.WriteLine("--------------------------\n");
 
             var choice = Console.ReadLine();
@@ -99,9 +118,13 @@ namespace CLI.LMS.UserSections
             }
             else if ("2".Equals(choice))
             {
-                DeleteCourse();
+                CopyCourseFlow(); 
             }
             else if ("3".Equals(choice))
+            {
+                DeleteCourse();
+            }
+            else if ("4".Equals(choice))
             {
                 CourseSelectorMenu();
             }
@@ -125,7 +148,7 @@ namespace CLI.LMS.UserSections
             Console.WriteLine("\nAvailable Courses:");
             foreach (var c in courses)
             {
-                Console.WriteLine($"{c.Id} - {c.Name} {c.Code}");
+                Console.WriteLine($"{c.Id} - {c.Name} ({c.Code}) - {c.Semester}");
             }
 
             Console.Write("\nEnter course Id (The number before the course name/code): ");
@@ -866,7 +889,7 @@ namespace CLI.LMS.UserSections
             Console.WriteLine("\nCourses:");
             foreach (var c in courses)
             {
-                Console.WriteLine($"{c.Id} - {c.Name} {c.Code}");
+                Console.WriteLine($"{c.Id} - {c.Name} ({c.Code}) - {c.Semester}");
             }
 
             Console.Write("\nEnter Course Id to delete: ");
@@ -1247,6 +1270,41 @@ namespace CLI.LMS.UserSections
             group.Weight = newWeight;
 
             Console.WriteLine("Group weight updated!");
+        }
+        public void CopyCourseFlow()
+        {
+            var courses = CourseServiceProxy.Current.Courses;
+
+            if (courses == null || !courses.Any())
+            {
+                Console.WriteLine("No courses available to copy.");
+                return;
+            }
+
+            Console.WriteLine("\nAvailable Courses:");
+            foreach (var c in courses)
+            {
+                Console.WriteLine($"{c.Id} - {c.Name} ({c.Code})");
+            }
+
+            Console.Write("\nEnter Course Id to copy: ");
+            var input = Console.ReadLine()?.Trim() ?? "";
+
+            if (!int.TryParse(input, out int courseId))
+            {
+                Console.WriteLine("Invalid input.");
+                return;
+            }
+
+            var copiedCourse = CourseServiceProxy.Current.CopyCourse(courseId);
+
+            if (copiedCourse == null)
+            {
+                Console.WriteLine("Course not found.");
+                return;
+            }
+
+            Console.WriteLine($"Course copied successfully: {copiedCourse.Name}");
         }
     }
 
