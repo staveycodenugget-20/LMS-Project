@@ -82,17 +82,27 @@ namespace CLI.LMS.UserSections
             newCourse.Semester = Console.ReadLine()?.Trim() ?? "";
 
             string semester;
+            bool valid;
+
             do
             {
-                Console.Write("Semester (required): ");
+                Console.Write("Semester (e.g., Fall 2026): ");
                 semester = Console.ReadLine()?.Trim() ?? "";
 
-                if (string.IsNullOrEmpty(semester))
+                var parts = semester.Split(' ');
+
+                valid = parts.Length == 2 &&
+                        (parts[0].Equals("Fall", StringComparison.OrdinalIgnoreCase) ||
+                         parts[0].Equals("Spring", StringComparison.OrdinalIgnoreCase) ||
+                         parts[0].Equals("Summer", StringComparison.OrdinalIgnoreCase)) &&
+                        int.TryParse(parts[1], out _);
+
+                if (!valid)
                 {
-                    Console.WriteLine("Semester cannot be empty.");
+                    Console.WriteLine("Invalid format. Use: Fall 2026");
                 }
 
-            } while (string.IsNullOrEmpty(semester));
+            } while (!valid);
 
             newCourse.Semester = semester;
 
@@ -105,8 +115,9 @@ namespace CLI.LMS.UserSections
             Console.WriteLine("Course Manager (Sub-Menu):");
             Console.WriteLine("1. Add a course");
             Console.WriteLine("2. Copy a course");
-            Console.WriteLine("3. Remove a course");
-            Console.WriteLine("4. Select existing course Menu");
+            Console.WriteLine("3. View courses by semester");
+            Console.WriteLine("4. Remove a course");
+            Console.WriteLine("5. Select existing course Menu");
             Console.WriteLine("--------------------------\n");
 
             var choice = Console.ReadLine();
@@ -122,9 +133,13 @@ namespace CLI.LMS.UserSections
             }
             else if ("3".Equals(choice))
             {
-                DeleteCourse();
+                ViewCoursesBySemester();
             }
             else if ("4".Equals(choice))
+            {
+                DeleteCourse();
+            }
+            else if ("5".Equals(choice))
             {
                 CourseSelectorMenu();
             }
@@ -1305,6 +1320,82 @@ namespace CLI.LMS.UserSections
             }
 
             Console.WriteLine($"Course copied successfully: {copiedCourse.Name}");
+        }
+        public void ViewCoursesBySemester()
+        {
+            var courses = CourseServiceProxy.Current.Courses;
+
+            if (courses == null || !courses.Any())
+            {
+                Console.WriteLine("No courses available.");
+                return;
+            }
+
+            Console.WriteLine("\n1. View All Grouped by Semester");
+            Console.WriteLine("2. Filter by Semester");
+            Console.WriteLine("3. Sort by Semester");
+
+            var choice = Console.ReadLine()?.Trim() ?? "";
+
+            switch (choice)
+            {
+                case "1":
+                    GroupBySemester(courses);
+                    break;
+
+                case "2":
+                    FilterBySemester(courses);
+                    break;
+
+                case "3":
+                    SortBySemester(courses);
+                    break;
+            }
+        }
+        private void GroupBySemester(List<Course> courses)
+        {
+            var grouped = courses
+                .GroupBy(c => c.Semester);
+
+            foreach (var group in grouped)
+            {
+                Console.WriteLine($"\n=== {group.Key} ===");
+
+                foreach (var course in group)
+                {
+                    Console.WriteLine($"{course.Id} - {course.Name} ({course.Code})");
+                }
+            }
+        }
+        private void FilterBySemester(List<Course> courses)
+        {
+            Console.Write("Enter semester: ");
+            var term = Console.ReadLine()?.Trim() ?? "";
+
+            var filtered = courses
+                .Where(c => c.Semester.Equals(term, StringComparison.OrdinalIgnoreCase));
+
+            if (!filtered.Any())
+            {
+                Console.WriteLine("No courses found for that semester.");
+                return;
+            }
+
+            foreach (var c in filtered)
+            {
+                Console.WriteLine($"{c.Id} - {c.Name} ({c.Code})");
+            }
+        }
+        private void SortBySemester(List<Course> courses)
+        {
+            var sorted = courses
+                .OrderBy(c => c.Semester)
+                .ThenBy(c => c.Name);
+
+            foreach (var c in sorted)
+            {
+                Console.WriteLine($"{c.Semester} - {c.Id} - {c.Name}");
+            }
         }
     }
 
