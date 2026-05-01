@@ -9,16 +9,14 @@ namespace MockCanvasMauiApp1
             InitializeComponent();
         }
 
-        private void OnTeacherClicked(object sender, EventArgs e)
+        private async void OnTeacherClicked(object sender, EventArgs e)
         {
-            var teacherMenu = new TeacherMenuSection();
-            teacherMenu.EnterMainMenu();
+            await Navigation.PushAsync(new TeacherPage());
         }
 
-        private void OnStudentClicked(object sender, EventArgs e)
+        private async void OnStudentClicked(object sender, EventArgs e)
         {
-            var studentMenu = new StudentMenuSection();
-            studentMenu.EnterMainMenu();
+            await Navigation.PushAsync(new StudentSelectionPage());
         }
     }
 }
