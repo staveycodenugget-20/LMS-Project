@@ -717,20 +717,55 @@ namespace CLI.LMS.UserSections
             //Review content
             Console.WriteLine($"\nContent:\n{submission.Content}");
 
-            //Assign grade
-            Console.Write("\nEnter grade (Input a number, not a letter grade): ");
-            var gradeInput = Console.ReadLine()?.Trim() ?? "";
+            Console.WriteLine("\nGrading Method:");
+            Console.WriteLine("1. Percentage (e.g., 95.5)");
+            Console.WriteLine("2. Points (e.g., 47 out of 50)");
 
-            //If I want doubles change this
-            if (!double.TryParse(gradeInput, out double grade))
+            var method = Console.ReadLine()?.Trim() ?? "";
+
+            double finalGrade;
+
+            if (method == "1")
             {
-                Console.WriteLine("Invalid grade.");
+                Console.Write("Enter percentage: ");
+                if (!double.TryParse(Console.ReadLine(), out double percent))
+                {
+                    Console.WriteLine("Invalid grade.");
+                    return;
+                }
+
+                finalGrade = percent;
+            }
+            else if (method == "2")
+            {
+                Console.Write($"Enter points (out of {assignment.AvailablePoints}): ");
+
+                if (!double.TryParse(Console.ReadLine(), out double points))
+                {
+                    Console.WriteLine("Invalid grade.");
+                    return;
+                }
+
+                if (assignment.AvailablePoints == 0)
+                {
+                    Console.WriteLine("Assignment has 0 available points.");
+                    return;
+                }
+
+                finalGrade = (points / assignment.AvailablePoints) * 100;
+            }
+            else
+            {
+                Console.WriteLine("Invalid option.");
                 return;
             }
 
-            submission.Grade = grade;
+            Console.Write("Enter feedback comment (optional): ");
+            submission.Comment = Console.ReadLine();
 
-            Console.WriteLine("Submission graded successfully!");
+            submission.Grade = finalGrade;
+
+            Console.WriteLine($"Submission graded successfully! ({finalGrade:F2}%)");
         }
 
         //Issue #10: Add modules to course
