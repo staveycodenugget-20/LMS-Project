@@ -365,12 +365,7 @@ namespace CLI.LMS.UserSections
                 }
                 else
                 {
-                    Console.WriteLine($"{assignment.Name}: {submission.Grade:F2}%");
-
-                    if (!string.IsNullOrEmpty(submission.Comment))
-                    {
-                        Console.WriteLine($"   Feedback: {submission.Comment}");
-                    }
+                    Console.WriteLine($"{assignment.Name}: {submission.Grade} / {assignment.AvailablePoints}");
                 }
             }
 
