@@ -44,7 +44,7 @@ namespace CLI.LMS.UserSections
 
             foreach (var c in enrolledCourses)
             {
-                Console.WriteLine($"{c.Id} - {c.Name} ({c.Code}) - {c.Semester}");
+                Console.WriteLine($"{c.Id} - {c.Name} ({c.Code}) - {c.Semester} - Section {c.Section}");
             }
 
             Console.Write("\nEnter course Id (The number before the course name/code): ");
@@ -79,7 +79,8 @@ namespace CLI.LMS.UserSections
                 Console.WriteLine("4. Submit Assignment");
                 Console.WriteLine("5. View Roster");
                 Console.WriteLine("6. View Course Schedule");
-                Console.WriteLine("7. Back");
+                Console.WriteLine("7. View Grades");
+                Console.WriteLine("8. Back");
 
 
                 var choice = Console.ReadLine()?.Trim() ?? "";
@@ -113,6 +114,10 @@ namespace CLI.LMS.UserSections
                         break;
 
                     case "7":
+                        ShowGrades(course, student);
+                        break;
+
+                    case "8":
                         running = false;
                         break;
 
@@ -339,5 +344,86 @@ namespace CLI.LMS.UserSections
 
             Console.WriteLine("Submission successful!");
         }
+        public void ShowGrades(Course course, Student student)
+        {
+            Console.WriteLine($"\nGrades for {student.Name}:");
+
+            if (!course.Assignments.Any())
+            {
+                Console.WriteLine("No assignments available.");
+                return;
+            }
+
+            foreach (var assignment in course.Assignments)
+            {
+                var submission = assignment.Submissions?
+                    .FirstOrDefault(s => s.StudentId == student.Id);
+
+                if (submission == null)
+                {
+                    Console.WriteLine($"{assignment.Name}: Not submitted");
+                }
+                else
+                {
+                    Console.WriteLine($"{assignment.Name}: {submission.Grade} / {assignment.AvailablePoints}");
+                }
+            }
+
+            double finalGrade = CalculateFinalGrade(course, student);
+
+            Console.WriteLine($"\nFinal Grade: {finalGrade:F2}%");
+        }
+        public double CalculateFinalGrade(Course course, Student student)
+        {
+            if (!course.AssignmentGroups.Any())
+            {
+                double totalScore = 0;
+                double totalPoints = 0;
+
+                foreach (var assignment in course.Assignments)
+                {
+                    var submission = assignment.Submissions?
+                        .FirstOrDefault(s => s.StudentId == student.Id);
+
+                    if (submission != null)
+                    {
+                        totalScore += submission.Grade ?? 0;
+                        totalPoints += assignment.AvailablePoints;
+                    }
+                }
+
+                return totalPoints > 0 ? (totalScore / totalPoints) * 100 : 0;
+            }
+
+            double total = 0;
+
+            foreach (var group in course.AssignmentGroups)
+            {
+                double groupScore = 0;
+                double groupTotal = 0;
+
+                foreach (var assignment in group.Assignments)
+                {
+                    var submission = assignment.Submissions?
+                        .FirstOrDefault(s => s.StudentId == student.Id);
+
+                    if (submission != null)
+                    {
+                        groupScore += submission.Grade ?? 0;
+                        groupTotal += assignment.AvailablePoints;
+                    }
+                }
+
+                if (groupTotal > 0)
+                {
+                    double groupAverage = (groupScore / groupTotal) * 100;
+                    total += groupAverage * (group.Weight / 100.0);
+                }
+            }
+
+            return total;
+        }
+
+
     }
 }

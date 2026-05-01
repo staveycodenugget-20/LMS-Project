@@ -503,6 +503,11 @@ namespace CLI.LMS.UserSections
             Console.Write("Description: ");
             newAssignment.Description = Console.ReadLine()?.Trim() ?? "";
 
+            Console.Write("Available Points (Default = 100): ");
+            int points;
+            int.TryParse(Console.ReadLine(), out points);
+            newAssignment.AvailablePoints = points;
+
             Console.Write("Due Date (MM/DD/YYYY): ");
             var input = Console.ReadLine()?.Trim() ?? "";
 
@@ -523,6 +528,8 @@ namespace CLI.LMS.UserSections
             {
                 newAssignment.Id = course.Assignments.Max(a => a.Id) + 1;
             }
+
+
 
             course.Assignments.Add(newAssignment);
 
@@ -709,11 +716,11 @@ namespace CLI.LMS.UserSections
             Console.WriteLine($"\nContent:\n{submission.Content}");
 
             //Assign grade
-            Console.Write("\nEnter grade (Input a whole number, not a letter grade): ");
+            Console.Write("\nEnter grade (Input a number, not a letter grade): ");
             var gradeInput = Console.ReadLine()?.Trim() ?? "";
 
             //If I want doubles change this
-            if (!int.TryParse(gradeInput, out int grade))
+            if (!double.TryParse(gradeInput, out double grade))
             {
                 Console.WriteLine("Invalid grade.");
                 return;
