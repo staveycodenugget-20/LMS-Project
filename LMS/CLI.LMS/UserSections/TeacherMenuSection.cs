@@ -89,6 +89,7 @@ namespace CLI.LMS.UserSections
                 Console.Write("Semester (e.g., Fall 2026): ");
                 semester = Console.ReadLine()?.Trim() ?? "";
 
+                //Logic
                 var parts = semester.Split(' ');
 
                 valid = parts.Length == 2 &&
@@ -105,6 +106,29 @@ namespace CLI.LMS.UserSections
             } while (!valid);
 
             newCourse.Semester = semester;
+
+            Console.Write("Section (e.g., 001): ");
+            newCourse.Section = Console.ReadLine()?.Trim() ?? "";
+
+            //Logic
+            string section;
+
+            do
+            {
+                Console.Write("Section (required, e.g., 001): ");
+                section = Console.ReadLine()?.Trim() ?? "";
+
+                if (string.IsNullOrEmpty(section))
+                {
+                    Console.WriteLine("Section cannot be empty.");
+                }
+
+            } while (string.IsNullOrEmpty(section));
+
+            newCourse.Section = section;
+
+
+
 
             return newCourse;
         }
@@ -163,7 +187,7 @@ namespace CLI.LMS.UserSections
             Console.WriteLine("\nAvailable Courses:");
             foreach (var c in courses)
             {
-                Console.WriteLine($"{c.Id} - {c.Name} ({c.Code}) - {c.Semester}");
+                Console.WriteLine($"{c.Id} - {c.Name} ({c.Code}) - {c.Semester} - Section {c.Section}");
             }
 
             Console.Write("\nEnter course Id (The number before the course name/code): ");
@@ -368,13 +392,11 @@ namespace CLI.LMS.UserSections
 
             var enrollChoice = Console.ReadLine();
 
-            //Ceate new student
             if ("1".Equals(enrollChoice))
             {
                 var newStudent = CreateStudentRecord();
                 StudentServiceProxy.Current.Add(newStudent);
 
-                //Shallow copy
                 course.Roster.Add(newStudent);
                 Console.WriteLine("\n--------------------------");
                 Console.WriteLine($"Student {newStudent.Name} enrolled!");
@@ -382,7 +404,6 @@ namespace CLI.LMS.UserSections
                 return;
             }
 
-            //Show existing students
             else if ("2".Equals(enrollChoice))
             {
                 if (students == null || !students.Any())
@@ -904,7 +925,7 @@ namespace CLI.LMS.UserSections
             Console.WriteLine("\nCourses:");
             foreach (var c in courses)
             {
-                Console.WriteLine($"{c.Id} - {c.Name} ({c.Code}) - {c.Semester}");
+                Console.WriteLine($"{c.Id} - {c.Name} ({c.Code}) - {c.Semester} - Section {c.Section}");
             }
 
             Console.Write("\nEnter Course Id to delete: ");
@@ -1299,7 +1320,7 @@ namespace CLI.LMS.UserSections
             Console.WriteLine("\nAvailable Courses:");
             foreach (var c in courses)
             {
-                Console.WriteLine($"{c.Id} - {c.Name} ({c.Code})");
+                Console.WriteLine($"{c.Id} - {c.Name} ({c.Code}) - {c.Semester} - Section {c.Section}");
             }
 
             Console.Write("\nEnter Course Id to copy: ");
@@ -1352,7 +1373,7 @@ namespace CLI.LMS.UserSections
                     break;
             }
         }
-        private void GroupBySemester(List<Course> courses)
+        public void GroupBySemester(List<Course> courses)
         {
             var grouped = courses
                 .GroupBy(c => c.Semester);
@@ -1363,11 +1384,11 @@ namespace CLI.LMS.UserSections
 
                 foreach (var course in group)
                 {
-                    Console.WriteLine($"{course.Id} - {course.Name} ({course.Code})");
+                    Console.WriteLine($"{course.Id} - {course.Name} ({course.Code}) - {course.Semester} - Section {course.Section}");
                 }
             }
         }
-        private void FilterBySemester(List<Course> courses)
+        public void FilterBySemester(List<Course> courses)
         {
             Console.Write("Enter semester: ");
             var term = Console.ReadLine()?.Trim() ?? "";
@@ -1383,10 +1404,10 @@ namespace CLI.LMS.UserSections
 
             foreach (var c in filtered)
             {
-                Console.WriteLine($"{c.Id} - {c.Name} ({c.Code})");
+                Console.WriteLine($"{c.Id} - {c.Name} ({c.Code}) - {c.Semester} - Section {c.Section}");
             }
         }
-        private void SortBySemester(List<Course> courses)
+        public void SortBySemester(List<Course> courses)
         {
             var sorted = courses
                 .OrderBy(c => c.Semester)
@@ -1394,7 +1415,7 @@ namespace CLI.LMS.UserSections
 
             foreach (var c in sorted)
             {
-                Console.WriteLine($"{c.Semester} - {c.Id} - {c.Name}");
+                Console.WriteLine($"{c.Id} - {c.Name} ({c.Code}) - {c.Semester} - Section {c.Section}");
             }
         }
     }

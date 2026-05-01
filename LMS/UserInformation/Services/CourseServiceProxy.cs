@@ -61,7 +61,8 @@ namespace UserInformation.Services
                 Name = original.Name + " (Copy)",
                 Code = original.Code,
                 Description = original.Description,
-                Semester = original.Semester
+                Semester = original.Semester,
+                Section = original.Section
             };
 
             foreach (var module in original.Modules)
