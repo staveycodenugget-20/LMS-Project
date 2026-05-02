@@ -21,7 +21,7 @@ public partial class StudentCoursesPage : ContentPage
     }
 
     /*  private async void OnCourseSelected(object sender, SelectedItemChangedEventArgs e)
-      {
+    {
           var selectedCourse = e.SelectedItem as Course;
 
           if (selectedCourse == null)
