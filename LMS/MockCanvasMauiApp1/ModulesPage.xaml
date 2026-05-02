@@ -20,6 +20,22 @@
 
         </ListView>
 
+        <Button x:Name="AddModuleBtn"
+                  Text="Add Module"
+                  Clicked="OnAddModuleClicked"/>
+
+        <Button x:Name="EditModuleBtn"
+                  Text="Edit Module"
+                  Clicked="OnEditModuleClicked"/>
+
+        <Button x:Name="DeleteModuleBtn"
+                  Text="Delete Module"
+                  Clicked="OnDeleteModuleClicked"/>
+
+        <Button x:Name="ManageContentBtn"
+                  Text="Manage Content"
+                  Clicked="OnManageContentClicked"/>
+
     </VerticalStackLayout>
 
 </ContentPage>

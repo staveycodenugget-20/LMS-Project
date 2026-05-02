@@ -15,6 +15,9 @@
         <Button Text="Manage Assignments"
                 Clicked="OnManageAssignmentsClicked"/>
 
+        <Button Text="Manage Modules"
+                Clicked="OnManageModulesClicked"/>
+
         <Button Text="View Students"
                 Clicked="OnViewStudentsClicked"/>
         
