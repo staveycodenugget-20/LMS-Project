@@ -23,6 +23,22 @@
 
         <Button Text="View Grades"
                 Clicked="OnGradesClicked"/>
+        
+        <Label Text="Roster Management"
+               FontSize="20"
+               FontAttributes="Bold"
+               Margin="0,20,0,0"/>
+
+        <ListView x:Name="RosterListView"
+                  ItemSelected="OnStudentSelected"
+                  HeightRequest="150">
+        </ListView>
+
+        <Button Text="Add Student"
+                Clicked="OnAddStudentClicked"/>
+
+        <Button Text="Remove Selected Student"
+                Clicked="OnRemoveStudentClicked"/>
 
     </VerticalStackLayout>
 
