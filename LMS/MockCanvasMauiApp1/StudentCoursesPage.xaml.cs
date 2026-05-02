@@ -36,7 +36,7 @@ public partial class StudentCoursesPage : ContentPage
         if (selectedCourse == null)
             return;
 
-        CoursesListView.SelectedItem = null; // optional cleanup
+        CoursesListView.SelectedItem = null; 
 
         await Navigation.PushAsync(new CourseDetailsPage(selectedCourse, _student));
     }

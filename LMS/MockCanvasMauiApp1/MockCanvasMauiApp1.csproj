@@ -72,6 +72,7 @@
 
 	<ItemGroup>
 	  <ProjectReference Include="..\CLI.LMS\CLI.LMS.csproj" />
+	  <ProjectReference Include="..\UserInformation\UserInformation.csproj" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -81,7 +82,19 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <MauiXaml Update="AssignmentsPage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
 	  <MauiXaml Update="CourseDetailsPage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="GradesPage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="ModuleDetailsPage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="ModulesPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
 	  <MauiXaml Update="StudentCoursesPage.xaml">
