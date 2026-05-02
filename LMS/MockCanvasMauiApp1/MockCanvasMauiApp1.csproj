@@ -118,6 +118,9 @@
 	  <MauiXaml Update="SelectStudentPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
+	  <MauiXaml Update="SubmissionPage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
 	  <MauiXaml Update="TeacherCourseRosterPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
