@@ -1,21 +1,33 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="MockCanvasMauiApp1.ModuleDetailsPage"
-             Title="Module">
+             Title="Module Content">
 
-    <VerticalStackLayout Padding="20">
+    <VerticalStackLayout Padding="20" Spacing="10">
 
         <Label Text="Module Content"
                FontSize="24"
-               HorizontalOptions="Center" />
+               HorizontalOptions="Center"/>
 
-        <ListView x:Name="ContentListView">
+        <ListView x:Name="ContentListView"
+                  ItemTapped="OnContentTapped">
+
             <ListView.ItemTemplate>
                 <DataTemplate>
-                    <TextCell Text="{Binding Id}" />
+                    <TextCell Text="{Binding Title}" />
                 </DataTemplate>
             </ListView.ItemTemplate>
+
         </ListView>
+
+        <Button Text="Add Content"
+                Clicked="OnAddContent"/>
+
+        <Button Text="Edit Content"
+                Clicked="OnEditContent"/>
+
+        <Button Text="Delete Content"
+                Clicked="OnDeleteContent"/>
 
     </VerticalStackLayout>
 
