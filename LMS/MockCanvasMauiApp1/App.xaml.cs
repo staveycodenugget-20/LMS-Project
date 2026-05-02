@@ -64,7 +64,6 @@ namespace MockCanvasMauiApp1
                 course.Assignments.Add(a2);
 
 
-                // Alice submissions
                 a1.Submissions.Add(new Submission
                 {
                     Id = 1,
@@ -87,7 +86,6 @@ namespace MockCanvasMauiApp1
                     //Feedback = "Good work, minor mistakes."
                 });
 
-                // Bob submissions
                 a1.Submissions.Add(new Submission
                 {
                     Id = 3,

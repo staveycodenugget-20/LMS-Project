@@ -1,8 +1,7 @@
-<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="MockCanvasMauiApp1.CourseDetailsPage"
-             Title="Course Details">
+             Title="Course">
 
     <VerticalStackLayout Padding="20" Spacing="15">
 
@@ -10,18 +9,14 @@
                FontSize="24"
                HorizontalOptions="Center" />
 
-        <Label Text="Assignments"
-               FontAttributes="Bold"
-               FontSize="18" />
+        <Button Text="View Modules"
+                Clicked="OnModulesClicked"/>
 
-        <ListView x:Name="AssignmentsListView">
-            <ListView.ItemTemplate>
-                <DataTemplate>
-                    <TextCell Text="{Binding Name}"
-                              Detail="{Binding DueDate}" />
-                </DataTemplate>
-            </ListView.ItemTemplate>
-        </ListView>
+        <Button Text="View Assignments"
+                Clicked="OnAssignmentsClicked"/>
+
+        <Button Text="View Grades"
+                Clicked="OnGradesClicked"/>
 
     </VerticalStackLayout>
 
