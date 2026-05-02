@@ -1,3 +1,4 @@
+using UserInformation.Services;
 using UserInformation.UserModels;
 
 namespace MockCanvasMauiApp1;
@@ -116,5 +117,58 @@ public partial class AssignmentsPage : ContentPage
     {
         AssignmentsListView.ItemsSource = null;
         AssignmentsListView.ItemsSource = _course.Assignments;
+    }
+    private async void OnCopyAssignmentClicked(object sender, EventArgs e)
+    {
+        if (_selectedAssignment == null)
+        {
+            await DisplayAlert("Error", "Select an assignment first.", "OK");
+            return;
+        }
+
+        var otherCourses = CourseServiceProxy.Current.Courses
+            .Where(c => c.Id != _course.Id)
+            .ToList();
+
+        if (!otherCourses.Any())
+        {
+            await DisplayAlert("Error", "No other courses available.", "OK");
+            return;
+        }
+
+        var courseNames = otherCourses.Select(c => c.Name).ToArray();
+
+        var selectedName = await DisplayActionSheet(
+            "Select destination course",
+            "Cancel",
+            null,
+            courseNames);
+
+        if (selectedName == "Cancel" || selectedName == null)
+            return;
+
+        var targetCourse = otherCourses
+            .FirstOrDefault(c => c.Name == selectedName);
+
+        if (targetCourse == null)
+            return;
+
+        var newAssignment = new Assignment
+        {
+            Id = targetCourse.Assignments.Any()
+                ? targetCourse.Assignments.Max(a => a.Id) + 1
+                : 1,
+
+            Name = _selectedAssignment.Name,
+            Description = _selectedAssignment.Description,
+            DueDate = _selectedAssignment.DueDate,
+            AvailablePoints = _selectedAssignment.AvailablePoints,
+
+            Submissions = new List<Submission>()
+        };
+
+        targetCourse.Assignments.Add(newAssignment);
+
+        await DisplayAlert("Success", "Assignment copied successfully!", "OK");
     }
 }
