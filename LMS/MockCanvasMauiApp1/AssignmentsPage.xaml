@@ -11,6 +11,8 @@
 
         <ListView x:Name="AssignmentsListView"
                    ItemTapped="OnAssignmentTapped">
+            
+            
             <ListView.ItemTemplate>
                 <DataTemplate>
                     <TextCell Text="{Binding Name}"
@@ -18,6 +20,18 @@
                 </DataTemplate>
             </ListView.ItemTemplate>
         </ListView>
+
+        <Button x:Name="AddBtn"
+                  Text="Add Assignment"
+                  Clicked="OnAddAssignmentClicked"/>
+
+        <Button x:Name="EditBtn"
+                  Text="Edit Assignment"
+                  Clicked="OnEditAssignmentClicked"/>
+
+        <Button x:Name="DeleteBtn"
+                  Text="Delete Assignment"
+                  Clicked="OnDeleteAssignmentClicked"/>
 
     </VerticalStackLayout>
 
