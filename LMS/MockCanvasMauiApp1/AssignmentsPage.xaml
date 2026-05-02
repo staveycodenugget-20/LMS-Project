@@ -9,7 +9,8 @@
                FontSize="24"
                HorizontalOptions="Center" />
 
-        <ListView x:Name="AssignmentsListView">
+        <ListView x:Name="AssignmentsListView"
+                   ItemTapped="OnAssignmentTapped">
             <ListView.ItemTemplate>
                 <DataTemplate>
                     <TextCell Text="{Binding Name}"

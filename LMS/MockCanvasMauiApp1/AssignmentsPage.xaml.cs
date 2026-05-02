@@ -16,4 +16,15 @@ public partial class AssignmentsPage : ContentPage
 
         AssignmentsListView.ItemsSource = course.Assignments;
     }
+    private async void OnAssignmentTapped(object sender, ItemTappedEventArgs e)
+    {
+        var assignment = e.Item as Assignment;
+
+        if (assignment == null)
+            return;
+
+        AssignmentsListView.SelectedItem = null;
+
+        await Navigation.PushAsync(new AssignmentSubmissionPage(assignment, _student));
+    }
 }
