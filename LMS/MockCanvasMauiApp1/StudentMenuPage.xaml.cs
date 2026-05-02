@@ -20,8 +20,8 @@ public partial class StudentMenuPage : ContentPage
         await Navigation.PushAsync(new StudentCoursesPage(_student));
     }
 
-    private async void OnViewGradesClicked(object sender, EventArgs e)
+   /* private async void OnViewGradesClicked(object sender, EventArgs e)
     {
         await DisplayAlert("Info", "Grades page coming next", "OK");
-    }
+    }*/
 }
