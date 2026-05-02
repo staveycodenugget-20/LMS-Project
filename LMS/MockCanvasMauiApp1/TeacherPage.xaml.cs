@@ -11,6 +11,10 @@ public partial class TeacherPage : ContentPage
     {
         await Navigation.PushAsync(new ManageCoursesPage());
     }
+    private async void OnManageStudentsClicked(object sender, EventArgs e)
+    {
+        await Navigation.PushAsync(new ManageStudentsPage());
+    }
 
     private async void OnAddAssignmentClicked(object sender, EventArgs e)
     {

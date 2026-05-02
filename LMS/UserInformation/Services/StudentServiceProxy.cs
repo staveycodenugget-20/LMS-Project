@@ -49,5 +49,19 @@ namespace CLI.LMS.Services
             students.Add(student);
             return student;
         }
+        public void Remove(Student student)
+        {
+            if (student == null) return;
+
+            students.Remove(student);
+        }
+        public void Update(Student student)
+        {
+            var existing = students.FirstOrDefault(s => s.Id == student.Id);
+
+            if (existing == null) return;
+
+            existing.Name = student.Name;
+        }
     }
 }
