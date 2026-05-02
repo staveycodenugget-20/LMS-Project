@@ -9,6 +9,12 @@
                FontSize="24"
                HorizontalOptions="Center" />
 
+        <Label x:Name="FinalGradeLabel"
+               FontSize="28"
+               FontAttributes="Bold"
+               HorizontalOptions="Center"
+               TextColor="Green" />
+
         <Button Text="View Modules"
                 Clicked="OnModulesClicked"/>
 

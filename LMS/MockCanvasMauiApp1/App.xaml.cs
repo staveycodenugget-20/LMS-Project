@@ -13,6 +13,7 @@ namespace MockCanvasMauiApp1
 
             SeedData();
 
+
         }
 
         protected override Window CreateWindow(IActivationState? activationState)

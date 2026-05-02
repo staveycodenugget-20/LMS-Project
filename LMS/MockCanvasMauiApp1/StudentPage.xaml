@@ -11,8 +11,6 @@
 
         <Button Text="View Courses"
                 Clicked="OnViewCoursesClicked" />
-        <Button Text="View Grades" />
-
     </VerticalStackLayout>
 
 </ContentPage>
