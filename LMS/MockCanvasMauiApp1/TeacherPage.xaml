@@ -9,9 +9,14 @@
                FontSize="28"
                HorizontalOptions="Center" />
 
-        <Button Text="Manage Courses" />
-        <Button Text="Add Assignment" />
-        <Button Text="View Students" />
+        <Button Text="Manage Courses"
+                Clicked="OnManageCoursesClicked"/>
+
+        <Button Text="Add Assignment"
+                Clicked="OnAddAssignmentClicked"/>
+
+        <Button Text="View Students"
+                Clicked="OnViewStudentsClicked"/>
 
     </VerticalStackLayout>
 
