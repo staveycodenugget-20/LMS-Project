@@ -17,6 +17,9 @@
 
         <Button Text="View Students"
                 Clicked="OnViewStudentsClicked"/>
+        
+        <Button Text="Manage Students"
+                Clicked="OnManageStudentsClicked"/>
 
     </VerticalStackLayout>
 
