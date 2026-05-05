@@ -8,13 +8,14 @@ public partial class TeacherCourseRosterPage : ContentPage
     private Course _course;
     private Student _selectedStudent;
 
-    public TeacherCourseRosterPage()
+    public TeacherCourseRosterPage(Course course)
     {
         InitializeComponent();
 
-        _course = CourseServiceProxy.Current.Courses.First();
+        _course = course;
 
         RosterListView.ItemsSource = _course.Roster;
+
     }
 
     private void OnStudentSelected(object sender, SelectedItemChangedEventArgs e)

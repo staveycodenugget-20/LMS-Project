@@ -11,10 +11,27 @@
                HorizontalOptions="Center" />
 
         <ListView x:Name="CoursesListView"
-                  ItemSelected="OnCourseSelected" />
+          ItemTapped="OnCourseTapped">
+
+            <ListView.ItemTemplate>
+                <DataTemplate>
+                    <TextCell Text="{Binding Name}" />
+                </DataTemplate>
+            </ListView.ItemTemplate>
+
+        </ListView>
 
         <Button Text="Create Course"
                 Clicked="OnCreateCourseClicked"/>
+
+        <Button Text="Export Roster"
+                Clicked="OnExportRosterClicked"/>
+
+        <Button Text="Import Roster"
+                Clicked="OnImportRosterClicked"/>
+
+        <Button Text="Manage Roster"
+                Clicked="OnManageRosterClicked"/>
 
     </VerticalStackLayout>
 

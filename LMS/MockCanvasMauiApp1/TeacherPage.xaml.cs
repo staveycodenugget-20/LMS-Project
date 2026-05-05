@@ -33,7 +33,28 @@ public partial class TeacherPage : ContentPage
 
     private async void OnViewStudentsClicked(object sender, EventArgs e)
     {
-        await Navigation.PushAsync(new TeacherCourseRosterPage());
+        var courses = CourseServiceProxy.Current.Courses;
+
+        if (!courses.Any())
+        {
+            await DisplayAlert("Error", "No courses available.", "OK");
+            return;
+        }
+
+        var courseNames = courses.Select(c => c.Name).ToArray();
+
+        var selectedName = await DisplayActionSheet(
+            "Select Course",
+            "Cancel",
+            null,
+            courseNames);
+
+        if (selectedName == "Cancel" || selectedName == null)
+            return;
+
+        var selectedCourse = courses.First(c => c.Name == selectedName);
+
+        await Navigation.PushAsync(new TeacherCourseRosterPage(selectedCourse));
     }
     private async void OnManageModulesClicked(object sender, EventArgs e)
     {

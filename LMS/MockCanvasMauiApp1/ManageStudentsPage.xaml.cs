@@ -15,9 +15,11 @@ public partial class ManageStudentsPage : ContentPage
         StudentsListView.ItemsSource = StudentServiceProxy.Current.Students;
     }
 
-    private void OnStudentSelected(object sender, SelectedItemChangedEventArgs e)
+    private void OnStudentTapped(object sender, ItemTappedEventArgs e)
     {
-        _selected = e.SelectedItem as Student;
+        _selected = e.Item as Student;
+
+        StudentsListView.SelectedItem = null; // optional cleanup
     }
 
     private async void OnAddStudent(object sender, EventArgs e)
