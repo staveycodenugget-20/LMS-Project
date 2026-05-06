@@ -15,6 +15,11 @@ public partial class CourseDetailsPage : ContentPage
         _course = course;
         _student = student;
 
+        if (_student != null)
+        {
+            AddAnnouncementBtn.IsVisible = false;
+        }
+
         CourseNameLabel.Text = course.Name;
 
         RosterListView.ItemsSource = _course.Roster;
