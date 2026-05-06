@@ -11,7 +11,15 @@
                HorizontalOptions="Center" />
 
         <ListView x:Name="RosterListView"
-                  ItemSelected="OnStudentSelected" />
+          ItemSelected="OnStudentSelected">
+
+            <ListView.ItemTemplate>
+                <DataTemplate>
+                    <TextCell Text="{Binding Name}" />
+                </DataTemplate>
+            </ListView.ItemTemplate>
+
+        </ListView>
 
         <Button Text="Add Student"
                 Clicked="OnAddStudentClicked"/>

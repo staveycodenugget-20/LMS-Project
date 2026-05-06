@@ -7,7 +7,15 @@
     <VerticalStackLayout Padding="20" Spacing="10">
 
         <ListView x:Name="StudentsListView"
-                  ItemSelected="OnStudentSelected" />
+          ItemTapped="OnStudentTapped">
+
+            <ListView.ItemTemplate>
+                <DataTemplate>
+                    <TextCell Text="{Binding Name}" />
+                </DataTemplate>
+            </ListView.ItemTemplate>
+
+        </ListView>
 
         <Button Text="Add Student"
                 Clicked="OnAddStudent"/>
