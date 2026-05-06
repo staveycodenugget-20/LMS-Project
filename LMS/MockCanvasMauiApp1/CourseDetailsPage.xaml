@@ -34,12 +34,6 @@
                   HeightRequest="150">
         </ListView>
 
-        <Button Text="Add Student"
-                Clicked="OnAddStudentClicked"/>
-
-        <Button Text="Remove Selected Student"
-                Clicked="OnRemoveStudentClicked"/>
-
     </VerticalStackLayout>
 
 </ContentPage>

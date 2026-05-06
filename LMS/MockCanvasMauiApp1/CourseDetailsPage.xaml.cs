@@ -97,36 +97,6 @@ public partial class CourseDetailsPage : ContentPage
 
         return total;
     }
-    private async void OnAddStudentClicked(object sender, EventArgs e)
-    {
-        var name = await DisplayPromptAsync("Add Student", "Enter student name:");
-
-        if (string.IsNullOrWhiteSpace(name))
-            return;
-
-        var newStudent = new Student
-        {
-            Id = _course.Roster.Any() ? _course.Roster.Max(s => s.Id) + 1 : 1,
-            Name = name
-        };
-
-        _course.Roster.Add(newStudent);
-
-        RosterListView.ItemsSource = null;
-        RosterListView.ItemsSource = _course.Roster;
-    }
-    private void OnRemoveStudentClicked(object sender, EventArgs e)
-    {
-        if (_selectedStudent == null)
-            return;
-
-        _course.Roster.Remove(_selectedStudent);
-
-        _selectedStudent = null;
-
-        RosterListView.ItemsSource = null;
-        RosterListView.ItemsSource = _course.Roster;
-    }
     private void OnStudentSelected(object sender, SelectedItemChangedEventArgs e)
     {
         _selectedStudent = e.SelectedItem as Student;
