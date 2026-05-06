@@ -6,20 +6,23 @@ namespace MockCanvasMauiApp1;
 
 public partial class ManageStudentsPage : ContentPage
 {
+    private Course _course;
     private Student _selected;
 
-    public ManageStudentsPage()
+    public ManageStudentsPage(Course course)
     {
         InitializeComponent();
 
-        StudentsListView.ItemsSource = StudentServiceProxy.Current.Students;
+        _course = course;
+
+        StudentsListView.ItemsSource = _course.Roster;
     }
 
     private void OnStudentTapped(object sender, ItemTappedEventArgs e)
     {
         _selected = e.Item as Student;
 
-        StudentsListView.SelectedItem = null; // optional cleanup
+        StudentsListView.SelectedItem = null; 
     }
 
     private async void OnAddStudent(object sender, EventArgs e)
@@ -29,42 +32,50 @@ public partial class ManageStudentsPage : ContentPage
         if (string.IsNullOrWhiteSpace(name))
             return;
 
-        StudentServiceProxy.Current.Add(new Student
+        var student = new Student
         {
+            Id = _course.Roster.Any()
+                ? _course.Roster.Max(s => s.Id) + 1
+                : 1,
             Name = name
-        });
+        };
+
+        _course.Roster.Add(student);
 
         Refresh();
     }
 
     private async void OnEditStudent(object sender, EventArgs e)
     {
-        if (_selected == null) return;
+        if (_selected == null)
+        {
+            await DisplayAlert("Error", "Select a student first.", "OK");
+            return;
+        }
 
-        var name = await DisplayPromptAsync("Edit Student", "Update name:", initialValue: _selected.Name);
+        var name = await DisplayPromptAsync("Edit", "New name:", initialValue: _selected.Name);
 
-        if (string.IsNullOrWhiteSpace(name)) return;
+        if (string.IsNullOrWhiteSpace(name))
+            return;
 
         _selected.Name = name;
 
         Refresh();
     }
 
-    private void OnRemoveStudent(object sender, EventArgs e)
+    private async void OnRemoveStudent(object sender, EventArgs e)
     {
-        if (_selected == null) return;
-
-        foreach (var course in CourseServiceProxy.Current.Courses)
+        if (_selected == null)
         {
-            course.Roster.RemoveAll(s => s.Id == _selected.Id);
-
-            foreach (var assignment in course.Assignments)
-            {
-                assignment.Submissions.RemoveAll(sub => sub.StudentId == _selected.Id);
-            }
+            await DisplayAlert("Error", "Select a student first.", "OK");
+            return;
         }
 
-        StudentServiceProxy.Current.Remove(_selected);
+        bool confirm = await DisplayAlert("Delete", "Remove this student?", "Yes", "No");
+
+        if (!confirm) return;
+
+        _course.Roster.Remove(_selected);
 
         _selected = null;
 
@@ -74,6 +85,6 @@ public partial class ManageStudentsPage : ContentPage
     private void Refresh()
     {
         StudentsListView.ItemsSource = null;
-        StudentsListView.ItemsSource = StudentServiceProxy.Current.Students;
+        StudentsListView.ItemsSource = _course.Roster;
     }
 }

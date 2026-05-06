@@ -6,6 +6,7 @@ namespace MockCanvasMauiApp1;
 
 public partial class StudentSelectionPage : ContentPage
 {
+    //BUG: omnly shows students from initial course
     public StudentSelectionPage()
     {
         InitializeComponent();

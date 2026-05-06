@@ -23,6 +23,8 @@ public partial class CourseDetailsPage : ContentPage
         string letter = GetLetterGrade(finalPercent);
 
         FinalGradeLabel.Text = $"Grade: {letter} ({finalPercent:F2}%)";
+
+        AnnouncementsListView.ItemsSource = _course.Announcements;
     }
 
     private async void OnModulesClicked(object sender, EventArgs e)
@@ -101,4 +103,5 @@ public partial class CourseDetailsPage : ContentPage
     {
         _selectedStudent = e.SelectedItem as Student;
     }
+    
 }

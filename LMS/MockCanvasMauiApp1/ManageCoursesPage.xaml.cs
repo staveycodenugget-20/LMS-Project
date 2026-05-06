@@ -143,4 +143,110 @@ public partial class ManageCoursesPage : ContentPage
 
         await Navigation.PushAsync(new TeacherCourseRosterPage(_selectedCourse));
     }
+    private async void OnAddAnnouncementClicked(object sender, EventArgs e)
+    {
+        if (_selectedCourse == null)
+        {
+            await DisplayAlert("Error", "Select a course first.", "OK");
+            return;
+        }
+
+        var text = await DisplayPromptAsync("Announcement", "Enter message:");
+
+        if (string.IsNullOrWhiteSpace(text))
+            return;
+
+        var announcement = new Announcement
+        {
+            Id = _selectedCourse.Announcements.Any()
+                ? _selectedCourse.Announcements.Max(a => a.Id) + 1
+                : 1,
+            Message = text,
+            CreatedAt = DateTime.Now
+        };
+
+        _selectedCourse.Announcements.Insert(0, announcement);
+
+        await DisplayAlert("Success", "Announcement added.", "OK");
+    }
+    private async void OnExportAssignmentsClicked(object sender, EventArgs e)
+    {
+        if (_selectedCourse == null)
+        {
+            await DisplayAlert("Error", "Select a course first.", "OK");
+            return;
+        }
+
+        var lines = new List<string>
+    {
+        "Name,Description,Points"
+    };
+
+        foreach (var a in _selectedCourse.Assignments)
+        {
+            lines.Add($"{a.Name},{a.Description},{a.AvailablePoints}");
+        }
+
+        var path = Path.Combine(FileSystem.AppDataDirectory, "assignments.csv");
+
+        File.WriteAllLines(path, lines);
+
+        await DisplayAlert("Exported",
+            $"{_selectedCourse.Assignments.Count} assignments saved.",
+            "OK");
+    }
+    private async void OnImportAssignmentsClicked(object sender, EventArgs e)
+    {
+        if (_selectedCourse == null)
+        {
+            await DisplayAlert("Error", "Select a course first.", "OK");
+            return;
+        }
+
+        var path = Path.Combine(FileSystem.AppDataDirectory, "assignments.csv");
+
+        if (!File.Exists(path))
+        {
+            await DisplayAlert("Error", "No file found.", "OK");
+            return;
+        }
+
+        var lines = File.ReadAllLines(path).Skip(1);
+
+        int added = 0;
+
+        foreach (var line in lines)
+        {
+            var parts = line.Split(',');
+
+            if (parts.Length < 3) continue;
+
+            string name = parts[0];
+            string description = parts[1];
+            int.TryParse(parts[2], out int points);
+
+            if (_selectedCourse.Assignments.Any(a => a.Name == name))
+                continue;
+
+            var assignment = new Assignment
+            {
+                Id = _selectedCourse.Assignments.Any()
+                    ? _selectedCourse.Assignments.Max(a => a.Id) + 1
+                    : 1,
+
+                Name = name,
+                Description = description,
+                AvailablePoints = points,
+
+                Submissions = new List<Submission>()
+            };
+
+            _selectedCourse.Assignments.Add(assignment);
+            added++;
+        }
+
+        await DisplayAlert("Import Complete",
+            $"{added} assignment(s) added.",
+            "OK");
+    }
 }

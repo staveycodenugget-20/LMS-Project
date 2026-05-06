@@ -5,6 +5,20 @@
 
     <VerticalStackLayout Padding="20" Spacing="15">
 
+        <Label Text="Announcements"
+               FontSize="22"
+               FontAttributes="Bold" />
+
+        <ListView x:Name="AnnouncementsListView"
+                  HeightRequest="150">
+            <ListView.ItemTemplate>
+                <DataTemplate>
+                    <TextCell Text="{Binding Message}"
+                              Detail="{Binding CreatedAt}" />
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView>
+
         <Label x:Name="CourseNameLabel"
                FontSize="24"
                HorizontalOptions="Center" />
