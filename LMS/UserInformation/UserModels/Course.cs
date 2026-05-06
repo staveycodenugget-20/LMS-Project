@@ -17,6 +17,7 @@ namespace UserInformation.UserModels
         public List<AssignmentGroup> AssignmentGroups { get; set; }
         public string Semester { get; set; } = "";
         public string Section { get; set; } = "";
+        public List<Announcement> Announcements { get; set; } = new List<Announcement>();
 
         public Course() { 
             Roster = new List<Student>();

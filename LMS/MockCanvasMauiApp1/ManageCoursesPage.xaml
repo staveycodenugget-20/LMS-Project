@@ -20,7 +20,10 @@
             </ListView.ItemTemplate>
 
         </ListView>
-
+        
+        <Button Text="Add Announcement"
+                Clicked="OnAddAnnouncementClicked"/>
+        
         <Button Text="Create Course"
                 Clicked="OnCreateCourseClicked"/>
 
@@ -32,6 +35,12 @@
 
         <Button Text="Manage Roster"
                 Clicked="OnManageRosterClicked"/>
+
+        <Button Text="Export Assignments"
+                Clicked="OnExportAssignmentsClicked"/>
+
+        <Button Text="Import Assignments"
+                Clicked="OnImportAssignmentsClicked"/>
 
     </VerticalStackLayout>
 

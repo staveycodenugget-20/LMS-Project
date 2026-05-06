@@ -18,8 +18,8 @@
         <Button Text="Manage Modules"
                 Clicked="OnManageModulesClicked"/>
 
-        <Button Text="View Students"
-                Clicked="OnViewStudentsClicked"/>
+        <!--<Button Text="View Students"
+                Clicked="OnViewStudentsClicked"/>-->
         
         <Button Text="Manage Students"
                 Clicked="OnManageStudentsClicked"/>
