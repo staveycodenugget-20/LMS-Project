@@ -42,6 +42,9 @@
         <Button Text="Import Assignments"
                 Clicked="OnImportAssignmentsClicked"/>
 
+        <Button Text="Course Settings"
+                Clicked="OnCourseSettingsClicked"/>
+
     </VerticalStackLayout>
 
 </ContentPage>

@@ -18,12 +18,22 @@ namespace UserInformation.UserModels
         public string Semester { get; set; } = "";
         public string Section { get; set; } = "";
         public List<Announcement> Announcements { get; set; } = new List<Announcement>();
+        public Dictionary<string, double> GradeCutoffs { get; set; }
 
         public Course() { 
             Roster = new List<Student>();
             Modules = new List<Module>();
             Assignments = new List<Assignment>();
             AssignmentGroups = new List<AssignmentGroup>();
+
+            GradeCutoffs = new Dictionary<string, double>
+            {
+                { "A", 90 },
+                { "B", 80 },
+                { "C", 70 },
+                { "D", 60 },
+                { "F", 0 }
+            };
         }
 
     }
