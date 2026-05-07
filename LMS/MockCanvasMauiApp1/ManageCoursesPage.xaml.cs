@@ -249,4 +249,14 @@ public partial class ManageCoursesPage : ContentPage
             $"{added} assignment(s) added.",
             "OK");
     }
+    private async void OnCourseSettingsClicked(object sender, EventArgs e)
+    {
+        if (_selectedCourse == null)
+        {
+            await DisplayAlert("Error", "Select a course first.", "OK");
+            return;
+        }
+
+        await Navigation.PushAsync(new CourseSettingsPage(_selectedCourse));
+    }
 }

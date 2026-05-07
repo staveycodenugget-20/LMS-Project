@@ -15,11 +15,6 @@ public partial class CourseDetailsPage : ContentPage
         _course = course;
         _student = student;
 
-        if (_student != null)
-        {
-            AddAnnouncementBtn.IsVisible = false;
-        }
-
         CourseNameLabel.Text = course.Name;
 
         RosterListView.ItemsSource = _course.Roster;
@@ -48,10 +43,12 @@ public partial class CourseDetailsPage : ContentPage
     }
     private string GetLetterGrade(double percent)
     {
-        if (percent >= 90) return "A";
-        if (percent >= 80) return "B";
-        if (percent >= 70) return "C";
-        if (percent >= 60) return "D";
+        var cutoffs = _course.GradeCutoffs;
+
+        if (percent >= cutoffs["A"]) return "A";
+        if (percent >= cutoffs["B"]) return "B";
+        if (percent >= cutoffs["C"]) return "C";
+        if (percent >= cutoffs["D"]) return "D";
         return "F";
     }
     private double CalculateFinalGrade(Course course, Student student)
