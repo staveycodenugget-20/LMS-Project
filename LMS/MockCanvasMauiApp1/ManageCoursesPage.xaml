@@ -45,6 +45,9 @@
         <Button Text="Course Settings"
                 Clicked="OnCourseSettingsClicked"/>
 
+        <Button Text="Export Gradebook"
+                Clicked="OnExportGradebookClicked"/>
+
     </VerticalStackLayout>
 
 </ContentPage>
