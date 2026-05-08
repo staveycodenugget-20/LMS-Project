@@ -259,4 +259,63 @@ public partial class ManageCoursesPage : ContentPage
 
         await Navigation.PushAsync(new CourseSettingsPage(_selectedCourse));
     }
+    private async void OnExportGradebookClicked(object sender, EventArgs e)
+    {
+        if (_selectedCourse == null)
+        {
+            await DisplayAlert("Error", "Select a course first.", "OK");
+            return;
+        }
+
+        var lines = new List<string>();
+
+        //Header row
+        string header = "Student";
+
+        foreach (var assignment in _selectedCourse.Assignments)
+        {
+            header += $",{assignment.Name}";
+        }
+
+        lines.Add(header);
+
+        //Student rows
+        foreach (var student in _selectedCourse.Roster)
+        {
+            string row = student.Name;
+
+            foreach (var assignment in _selectedCourse.Assignments)
+            {
+                var submission = assignment.Submissions?
+                    .FirstOrDefault(s => s.StudentId == student.Id);
+
+                if (submission != null)
+                {
+                    row += $",{submission.Grade}";
+                }
+                else
+                {
+                    row += ",";
+                }
+            }
+
+            lines.Add(row);
+        }
+
+        //Save file
+        var path = Path.Combine(
+            FileSystem.AppDataDirectory,
+            $"gradebook_{_selectedCourse.Name}.csv");
+
+        File.WriteAllLines(path, lines);
+
+        //await DisplayAlert(
+        //    "Exported",
+        //    $"Gradebook saved:\n{path}",
+        //    "OK");
+
+        var contents = File.ReadAllText(path);
+
+        await DisplayAlert("Gradebook CSV", contents, "OK");
+    }
 }
