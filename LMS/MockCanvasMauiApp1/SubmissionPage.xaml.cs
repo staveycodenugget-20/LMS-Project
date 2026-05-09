@@ -16,6 +16,15 @@ public partial class SubmissionPage : ContentPage
         _assignment = assignment;
         _student = student;
 
+        if (_assignment is QuizAssignment quiz)
+        {
+            QuestionLabel.Text = quiz.Question;
+        }
+        else
+        {
+            QuestionLabel.IsVisible = false;
+        }
+
         AssignmentNameLabel.Text = assignment.Name;
     }
 

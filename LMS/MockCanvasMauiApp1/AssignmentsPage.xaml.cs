@@ -171,4 +171,33 @@ public partial class AssignmentsPage : ContentPage
 
         await DisplayAlert("Success", "Assignment copied successfully!", "OK");
     }
+    private async void OnAddQuizClicked(object sender, EventArgs e)
+    {
+        var name = await DisplayPromptAsync("Quiz", "Enter quiz name:");
+
+        if (string.IsNullOrWhiteSpace(name))
+            return;
+
+        var question = await DisplayPromptAsync("Quiz", "Enter question:");
+
+        var pointsInput = await DisplayPromptAsync("Quiz", "Enter points:");
+
+        int.TryParse(pointsInput, out int points);
+
+        var quiz = new QuizAssignment
+        {
+            Id = _course.Assignments.Any()
+                ? _course.Assignments.Max(a => a.Id) + 1
+                : 1,
+
+            Name = name,
+            Question = question,
+            AvailablePoints = points,
+            Submissions = new List<Submission>()
+        };
+
+        _course.Assignments.Add(quiz);
+
+        Refresh();
+    }
 }

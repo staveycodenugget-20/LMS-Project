@@ -24,7 +24,11 @@
         <Button x:Name="AddBtn"
                   Text="Add Assignment"
                   Clicked="OnAddAssignmentClicked"/>
-        
+
+        <Button x:Name="AddQuizBtn"
+                  Text="Add Quiz"
+                  Clicked="OnAddQuizClicked"/>
+
         <Button Text="Copy Assignment"
                 Clicked="OnCopyAssignmentClicked"/>
 
