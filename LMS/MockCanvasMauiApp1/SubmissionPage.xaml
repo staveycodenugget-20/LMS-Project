@@ -11,12 +11,19 @@
                HorizontalOptions="Center" />
 
         <Label x:Name="QuestionLabel"
-                 FontSize="20"
-                 FontAttributes="Bold"/>
+               FontSize="20"
+               FontAttributes="Bold"/>
 
         <Editor x:Name="SubmissionEditor"
                 Placeholder="Enter your response here..."
                 HeightRequest="150"/>
+
+        <Button Text="Upload File"
+                Clicked="OnUploadFileClicked"/>
+
+        <Label x:Name="FileLabel"
+               Text="No file selected"
+               FontSize="14"/>
 
         <Button Text="Submit"
                 Clicked="OnSubmitClicked"/>
