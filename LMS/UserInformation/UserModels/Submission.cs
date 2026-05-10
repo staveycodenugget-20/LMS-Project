@@ -13,6 +13,8 @@ namespace UserInformation.UserModels
         public DateTime SubmissionDate { get; set; }
         public double? Grade { get; set; }
         public string? Comment { get; set; }
+        public string FilePath { get; set; } = "";
+        public string FileName { get; set; } = "";
 
     }
 }

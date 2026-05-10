@@ -7,6 +7,8 @@ public partial class SubmissionPage : ContentPage
     private Course _course;
     private Assignment _assignment;
     private Student _student;
+    private string _selectedFilePath = "";
+    private string _selectedFileName = "";
 
     public SubmissionPage(Course course, Assignment assignment, Student student)
     {
@@ -58,7 +60,9 @@ public partial class SubmissionPage : ContentPage
 
                 StudentId = _student.Id,
                 Content = content,
-                SubmissionDate = DateTime.Now
+                SubmissionDate = DateTime.Now,
+                FilePath = _selectedFilePath,
+                FileName = _selectedFileName
             };
 
             _assignment.Submissions.Add(submission);
@@ -67,5 +71,24 @@ public partial class SubmissionPage : ContentPage
         }
 
         await Navigation.PopAsync();
+    }
+    private async void OnUploadFileClicked(object sender, EventArgs e)
+    {
+        try
+        {
+            var result = await FilePicker.PickAsync();
+
+            if (result != null)
+            {
+                _selectedFilePath = result.FullPath;
+                _selectedFileName = result.FileName;
+
+                FileLabel.Text = $"Selected: {_selectedFileName}";
+            }
+        }
+        catch (Exception ex)
+        {
+            await DisplayAlert("Error", ex.Message, "OK");
+        }
     }
 }
