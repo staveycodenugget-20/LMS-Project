@@ -1,0 +1,6 @@
+@MockCanvasAPI_HostAddress = http://localhost:5211
+
+GET {{MockCanvasAPI_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

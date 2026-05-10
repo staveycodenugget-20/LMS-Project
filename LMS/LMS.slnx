@@ -1,5 +1,6 @@
 <Solution>
   <Project Path="CLI.LMS/CLI.LMS.csproj" />
+  <Project Path="MockCanvasAPI/MockCanvasAPI.csproj" Id="d320430b-3623-4087-9b6e-ed4a4b19d6ef" />
   <Project Path="MockCanvasMauiApp1/MockCanvasMauiApp1.csproj" Id="770d65eb-2995-4c13-bc78-b270906efb96">
     <Deploy Solution="Debug|*" />
   </Project>
