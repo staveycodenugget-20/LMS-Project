@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="MockCanvasMauiApp1.SemesterSettingsPage"
+             Title="SemesterSettingsPage">
+    <VerticalStackLayout Padding="20" Spacing="15">
+        <Label Text="Semester Settings"
+               FontSize="24"
+               HorizontalOptions="Center" />
+
+        <Label Text="Start Date" />
+
+        <DatePicker x:Name="StartDatePicker" />
+
+        <Label Text="End Date" />
+
+        <DatePicker x:Name="EndDatePicker" />
+
+        <Button Text="Save Semester Dates"
+                Clicked="OnSaveSemesterClicked" />
+    </VerticalStackLayout>
+</ContentPage>

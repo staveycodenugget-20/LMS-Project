@@ -93,4 +93,9 @@ public partial class TeacherPage : ContentPage
         await Navigation.PushAsync(new ModulesPage(course, null));
     }
 
+    private async void OnSemesterSettingsClicked(object sender, EventArgs e)
+    {
+        await Navigation.PushAsync(new SemesterSettingsPage());
+    }
+
 }

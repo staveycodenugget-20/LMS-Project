@@ -24,6 +24,9 @@
         <Button Text="Manage Students"
                 Clicked="OnManageStudentsClicked"/>
 
+        <Button Text="Semester Settings"
+                Clicked="OnSemesterSettingsClicked"/>
+
     </VerticalStackLayout>
 
 </ContentPage>
