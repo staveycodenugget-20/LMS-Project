@@ -25,6 +25,23 @@ public partial class ManageStudentsPage : ContentPage
         StudentsListView.SelectedItem = null; 
     }
 
+    private void OnStudentSearchTextChanged(object sender, TextChangedEventArgs e)
+    {
+        string searchText = e.NewTextValue?.Trim() ?? "";
+
+        if (string.IsNullOrWhiteSpace(searchText))
+        {
+            StudentsListView.ItemsSource = _course.Roster;
+            return;
+        }
+
+        var filteredStudents = _course.Roster
+            .Where(s => s.Name.Contains(searchText, StringComparison.OrdinalIgnoreCase))
+            .ToList();
+
+        StudentsListView.ItemsSource = filteredStudents;
+    }
+
     private async void OnAddStudent(object sender, EventArgs e)
     {
         var name = await DisplayPromptAsync("Student", "Enter name:");

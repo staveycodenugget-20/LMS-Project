@@ -6,6 +6,10 @@
 
     <VerticalStackLayout Padding="20" Spacing="10">
 
+        <SearchBar x:Name="StudentSearchBar"
+                   Placeholder="Search students..."
+                   TextChanged="OnStudentSearchTextChanged" />
+
         <ListView x:Name="StudentsListView"
           ItemTapped="OnStudentTapped">
 
