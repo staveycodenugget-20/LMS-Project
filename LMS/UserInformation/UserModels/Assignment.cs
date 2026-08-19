@@ -13,9 +13,11 @@ namespace UserInformation.UserModels
         public DateTime DueDate { get; set; }
         public List<Submission>? Submissions { get; set; }
         //Fixed a null error when trying to add a submission to an assignment.
+        public List<AssignmentComment> Comments { get; set; }
         public Assignment()
         {
             Submissions = new List<Submission>();
+            Comments = new List<AssignmentComment>();
         }
     }
 }

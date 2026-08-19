@@ -200,4 +200,19 @@ public partial class AssignmentsPage : ContentPage
 
         Refresh();
     }
+    private async void OnViewCommentsClicked(object sender, EventArgs e)
+    {
+        if (_selectedAssignment == null)
+        {
+            await DisplayAlert(
+                "Error",
+                "Select an assignment first.",
+                "OK");
+
+            return;
+        }
+
+        await Navigation.PushAsync(
+            new AssignmentCommentsPage(_selectedAssignment));
+    }
 }

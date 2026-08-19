@@ -28,6 +28,8 @@ public partial class SubmissionPage : ContentPage
         }
 
         AssignmentNameLabel.Text = assignment.Name;
+
+        CommentsListView.ItemsSource = _assignment.Comments;
     }
 
     private async void OnSubmitClicked(object sender, EventArgs e)
@@ -90,5 +92,36 @@ public partial class SubmissionPage : ContentPage
         {
             await DisplayAlert("Error", ex.Message, "OK");
         }
+    }
+    private async void OnPostCommentClicked(object sender, EventArgs e)
+    {
+        if (string.IsNullOrWhiteSpace(CommentEditor.Text))
+            return;
+
+        var comment = new AssignmentComment
+        {
+            Id = _assignment.Comments.Any()
+                ? _assignment.Comments.Max(c => c.Id) + 1
+                : 1,
+
+            StudentId = _student.Id,
+
+            AssignmentId = _assignment.Id,
+            //Bug where author of comment always shows teacher
+            AuthorName = _student.Name,
+
+            Message = CommentEditor.Text,
+
+            DatePosted = DateTime.Now
+        };
+
+        _assignment.Comments.Add(comment);
+
+        CommentEditor.Text = "";
+
+        CommentsListView.ItemsSource = null;
+        CommentsListView.ItemsSource = _assignment.Comments;
+
+        await DisplayAlert("Success", "Comment posted.", "OK");
     }
 }

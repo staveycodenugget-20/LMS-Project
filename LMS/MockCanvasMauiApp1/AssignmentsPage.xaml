@@ -39,6 +39,9 @@
         <Button x:Name="DeleteBtn"
                   Text="Delete Assignment"
                   Clicked="OnDeleteAssignmentClicked"/>
+        
+        <Button Text="View Comments"
+                Clicked="OnViewCommentsClicked"/>
 
     </VerticalStackLayout>
 

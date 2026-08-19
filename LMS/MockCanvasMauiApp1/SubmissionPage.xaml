@@ -28,6 +28,30 @@
         <Button Text="Submit"
                 Clicked="OnSubmitClicked"/>
 
+        <Label Text="Comments"
+       FontSize="20"
+       FontAttributes="Bold"
+       Margin="0,20,0,0"/>
+
+        <ListView x:Name="CommentsListView"
+          HeightRequest="200">
+
+            <ListView.ItemTemplate>
+                <DataTemplate>
+                    <TextCell Text="{Binding Message}"
+                      Detail="{Binding AuthorName}" />
+                </DataTemplate>
+            </ListView.ItemTemplate>
+
+        </ListView>
+
+        <Editor x:Name="CommentEditor"
+        Placeholder="Write a comment..."
+        HeightRequest="100"/>
+
+        <Button Text="Post Comment"
+        Clicked="OnPostCommentClicked"/>
+
     </VerticalStackLayout>
 
 </ContentPage>

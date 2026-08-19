@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="MockCanvasMauiApp1.AssignmentCommentsPage"
+             Title="AssignmentCommentsPage">
+    <VerticalStackLayout>
+        <Label 
+           x:Name="AssignmentNameLabel"
+               FontSize="24"
+               FontAttributes="Bold"
+               HorizontalOptions="Center"/>
+
+        <ListView x:Name="CommentsListView">
+
+            <ListView.ItemTemplate>
+                <DataTemplate>
+                    <TextCell Text="{Binding Message}"
+                              Detail="{Binding AuthorName}"/>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+
+        </ListView>
+
+        <Editor x:Name="CommentEditor"
+                Placeholder="Write a response..."
+                HeightRequest="100"/>
+
+        <Button Text="Post Comment"
+                Clicked="OnPostCommentClicked"/>
+    </VerticalStackLayout>
+</ContentPage>
