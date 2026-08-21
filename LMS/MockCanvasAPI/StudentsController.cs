@@ -1,38 +1,52 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using MockCanvasAPI.Data;
 using UserInformation.UserModels;
 
 namespace MockCanvasAPI.Controllers
 {
-    //Test with https://localhost:7192/swagger or whatever  run program generates for local host num
-
     [ApiController]
     [Route("[controller]")]
     public class StudentsController : ControllerBase
     {
-        private static List<Student> students = new List<Student>();
+        private readonly StudentDbContext _context;
+
+        public StudentsController(StudentDbContext context)
+        {
+            _context = context;
+        }
 
         [HttpGet]
-        public IEnumerable<Student> Get()
+        public async Task<IEnumerable<Student>> Get()
         {
-            return students;
+            return await _context.Students.ToListAsync();
         }
 
         [HttpPost]
-        public Student Post(Student student)
+        public async Task<Student> Post(Student student)
         {
-            students.Add(student);
+            _context.Students.Add(student);
+
+            await _context.SaveChangesAsync();
+
             return student;
         }
 
         [HttpDelete("{id}")]
-        public void Delete(int id)
+        public async Task<IActionResult> Delete(int id)
         {
-            var student = students.FirstOrDefault(s => s.Id == id);
+            var student = await _context.Students.FindAsync(id);
 
-            if (student != null)
+            if (student == null)
             {
-                students.Remove(student);
+                return NotFound();
             }
+
+            _context.Students.Remove(student);
+
+            await _context.SaveChangesAsync();
+
+            return NoContent();
         }
     }
 }
